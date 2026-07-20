@@ -1,0 +1,1 @@
+I'm Tamene. And this is ma first repo for this bootcamp
