@@ -16,17 +16,23 @@ else:
 for i in range(1, 11):
     print(f"Recipt # {i}")
 
-
-
-
-
-
-
-
-
-
 # 3. Even numbers. Print every even number from 1 to 20 using a loop and the modulo operator %.
+
+while i <= 20:
+    if i % 2 == 0:
+        print(i)
+    i += 1
+
 # 4. Discount function. Write apply_discount(price, percent=10) that returns the price after the 
 # discount. Test it with and without the default.
+def apply_discount(price, percent=10):
+    discount = price * (percent / 100)
+    return price - discount 
+
 # 5. Countdown. Use a while loop to count down from 5 to 1, printing each number, then print 
 # "Liftoff!".
+i = 5
+while i >0:
+    print(i)
+    i -= 1
+print("Liftoff!")
