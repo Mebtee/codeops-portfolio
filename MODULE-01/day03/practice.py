@@ -1,32 +1,32 @@
-#practice 1 unique city
-citys = ['Addis Ababa', 'hawassa', 'Bahir Dar', 'Gondar', 'Shashamane', 'Dire Dawa', 'Adama', 'Jimma', 'Adama', 'Dire Dawa', 'Shashamane']
-#before unique citys 
-print(f"Number of cities in lists: {len(citys)}")
+#1. Unique cities. Given a list with repeated city names, use a set to print the distinct cities, then 
+# the count.
+cities = ['Addis Ababa', 'jimma', 'Bahir Dar', 'Gondar', 'paris', 'Dire Dawa', 'Adama', 'ilibabour', 'Adama', 'Dire Dawa', 'paris']
+print(f"Number of cities in lists: {len(cities)}")
 
-unique_citys = set(citys)
-print(f"Number of unique cities in lists: {len(unique_citys)}")
+unique_cities = set(cities)
+print(f"Number of unique cities in lists: {len(unique_cities)}")
 
-#practice 2 Make a dictionary of five grocery items and prices in ETB. Loop with .items() to
-#print each on its own line.
+#Price report. Make a dictionary of five grocery items and prices in ETB. Loop with .items() to 
+# print each on its own line.
 
 grocery_items = {
-    'bread': 20,
-    'milk': 85,
-    'eggs': 30,
-    'cheese': 50,
-    'butter': 205
+    'injera': 25,
+    'teff': 185,
+    'soya': 70,
+    'egg': 20,
+    'fish': 205
 }
 
 
 for item, price in grocery_items.items():
-    print(f"{item}: {price:.2f} ETB")
-
+    print(f"{item}: {price:} ETB")
+    
 #practice 3 Tax comprehension. Given prices = [100, 250, 400, 80], use one comprehension to build
 #a list with 15% tax added
 
 prices = [100, 250, 400, 80]
-texed_price = [price *1.15 for price in prices]
-print(f"{texed_price[0]:.2f}, {texed_price[1]:.2f}, {texed_price[2]:.2f}, {texed_price[3]:.2f}") #.2f formats the output to two decimal places only
+taxed_prices = [price * 1.15 for price in prices]
+print(f"Taxed prices: {taxed_prices[0]:.2f}, {taxed_prices[1]:.2f}, {taxed_prices[2]:.2f}, {taxed_prices[3]:.2f}")
 
 #practice 4 Cheap items. From the same list, use a comprehension with a condition to keep only prices
 #under 200
@@ -37,29 +37,30 @@ print(cheap_items)
 #practice 5 Write & read. Write three customer names to names.txt, then open it and print each name
 #back, one per line
 
-with open('name.txt', 'w') as file:
-    file.write("Mohammed Yasin\n")
-    file.write("Abebe Bekele\n")
-    file.write("Kebede Lemma\n")
+with open('name.txt', 'w') as f:
+    f.write("tame beh\n")
+    f.write("messi barcia\n")
+    f.write("charli chapi\n")
 
-    with open('name.txt', 'r') as f:
-        for line in f:
-            print(line.strip()) #.strip() removes the newline character from the end of each line when printing
+
+with open("name.txt", "r") as f:
+    for line in f:
+        print(line.strip())
 
 #practice 6 Safe division. Ask the user for a number and divide 1000 by it, catching both ValueError and
 #ZeroDivisionError
 
 try:
-    user_input = int(input("Enter a number to divide 1000 by it: "))
-
-    result = 1000 / user_input
-    print(f"Result: {result:.2f}")
-
+    number = int(input("enter a number_divisible by 1000: "))
+    result = 1000 / number
 except ValueError:
-    print("Invalid input. Please Check the input and  enter a valid number.")
-
+    print("Invalid input. Please enter a valid number.")
 except ZeroDivisionError:
-    print("You gave zero as input. Please enter a non-zero number.")
-
+    print("Error: Division by zero is not allowed.")
+else:
+    print(f"Result: {result}")
 finally:
-    print("task 6 operation Done. Thank you for using the program.")
+    print("Execution completed.")
+    
+    
+    
