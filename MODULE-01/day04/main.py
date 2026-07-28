@@ -37,7 +37,15 @@ user2 =Account("Abebe", 10003021, 200)
 print(f"{user1.owner} has a balance of {user1.balance}")
 print(f"{user2.owner} has a balance of {user2.balance}")
 
-print(user1.deposite(10))
-print(user2.deposite(20))
 
+user1.deposite(10)
+user2.deposite(20)
 
+print(f"{user1.owner} has a balance of {user1.balance}")
+print(f"{user2.owner} has a balance of {user2.balance}")
+
+user1.withdraw(10)
+user2.withdraw(20)
+
+print(f"{user1.owner} has a balance of {user1.balance}")
+print(f"{user2.owner} has a balance of {user2.balance}")
