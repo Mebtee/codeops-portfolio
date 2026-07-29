@@ -1,10 +1,10 @@
-Paracetamol 500mg, 50
-Amoxicillin 500mg, 30
-Ibuprofen 400mg, 40
-Omeprazole 20mg, 20
-Cetirizine 10mg, 30
-Vitamin C 1000mg, 60
-Hand Sanitizer 500ml, 15
-Surgical Face Masks, 100
-Digital Thermometer, 5
-Sterile Gauze Pads, 25
+Paracetamol 500mg,50
+Amoxicillin 500mg,30
+Ibuprofen 400mg,40
+Omeprazole 20mg,20
+Cetirizine 10mg,30
+Vitamin C 1000mg,60
+Hand Sanitizer 500ml,15
+Surgical Face Masks,100
+Digital Thermometer,5
+Sterile Gauze Pads,25
