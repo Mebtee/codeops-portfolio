@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birr Watch</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Foreign Currency to ETB Converter</h1>
+
+    <!-- Status Bar (Loading, Success, Error messages) -->
+    <div id="status" class="status-bar" aria-live="polite"></div>
+
+    <!-- Conversion Form -->
+    <form id="converter-form" class="card">
+      <h2>Convert to ETB</h2>
+
+      <div class="form-group">
+        <label for="currency-select">Source Currency (From):</label>
+        <select id="currency-select" required disabled>
+          <option value="">Loading currencies...</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="amount">Amount:</label>
+        <input 
+          type="number" 
+          id="amount" 
+          step="any" 
+          min="0" 
+          placeholder="e.g. 100" 
+          required 
+        />
+      </div>
+
+      <button type="submit" id="convert-btn" disabled>Convert to ETB</button>
+      <button type="button" id="add-watchlist-btn" disabled>+ Add to Watchlist</button>
+    </form>
+
+    <!-- Conversion Result -->
+    <div id="result" class="card result-card">
+      <p class="placeholder-text">Select a currency and enter an amount to convert to ETB.</p>
+    </div>
+
+    <!-- Watchlist Section -->
+    <section class="card">
+      <h2>My Watchlist</h2>
+      <ul id="watchlist-list" class="watchlist">
+        <!-- Watchlist items will be rendered dynamically -->
+      </ul>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
