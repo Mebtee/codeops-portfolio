@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Persistent Signup Form</title>
+</head>
+<body>
+
+  <!-- Counter displaying restored signups -->
+  <p id="count-display">Signed up users: 0</p>
+
+  <!-- Main Form -->
+  <form id="signup-form">
+    <div>
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name">
+    </div>
+
+    <div>
+      <label for="phone">Phone Number:</label>
+      <input type="tel" id="phone" name="phone">
+    </div>
+
+    <button type="submit">Sign Up</button>
+  </form>
+
+  <!-- Error display area -->
+  <div id="error-message"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
