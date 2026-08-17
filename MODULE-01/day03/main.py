@@ -1,4 +1,13 @@
+# Goal
+# Read a file of TeleBirr transactions, summarise them by customer using a dictionary,
+# and handle a missing file gracefully.
 
+# Steps
+# 1. Read transactions.txt line by line (name,amount per line).
+# 2. Build a dict mapping each customer to their total spend.
+# 3. Print each customer and total, sorted highest first.
+# 4. Wrap the file read in try / except for a missing file.
+# 5. Write the summary to report.txt, then push to GitHub.
 
 total_spend = {}
 try:

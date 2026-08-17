@@ -104,4 +104,5 @@ alert_service = Alert()
 account1.attach(alert_service)  
 
 account1.statement()
-account1.add_interest() 
+account1.withdraw(500)
+account1.statement()

@@ -1,3 +1,16 @@
+# In-Class Exercise — Model the Bank
+
+# Goal
+# Model the bank's branch hierarchy as a tree with a recursive total, and its transfers
+# as a graph you can traverse with BFS.
+
+# Steps
+# 1. Copy day08/registry.py into day09/ to keep growing it.
+# 2. Build a Branch tree: head office → regions → branches.
+# 3. Write a recursive total_balance() for any branch.
+# 4. Build a transfers graph as a dict, and a bfs() over it.
+# 5. Print the bank's total and who CBE-1 can reach; push to day09.
+
 from collections import deque
 
 class Alert:
@@ -171,20 +184,15 @@ class Branch:
 
     @staticmethod
     def recursive_total_balance(branch):
-        """Recursively calculates the total balance of a branch and all its nested sub-branches."""
-        # Sum balances of accounts directly in this branch
         local_balance = sum(acc.balance for acc in branch.accounts)
         
-        # Base case / recursive step: sum balances of sub-branches
         sub_balance = sum(Branch.recursive_total_balance(sub) for sub in branch.sub_branches)
         
         return local_balance + sub_balance
 
 
-# --- Step 4: Transfers Graph & BFS Traversal ---
 class BankNetwork:
     def __init__(self):
-        # Adjacency list representing transfer routing paths between branches/nodes
         self.graph = {}
 
     def add_route(self, node_from, node_to):
@@ -211,15 +219,13 @@ class BankNetwork:
         return reachable
 
 
-# --- Testing the Implementation ---
-print("--- Creating Sample Accounts ---")
+
 acc1 = AccountFactory.create("saving", "Tamene", 10003020, 1500, 0.05)
 acc2 = AccountFactory.create("checking", "Abebe", 10003021, 2500, overdraft_limit=50)
 acc3 = AccountFactory.create("saving", "Aster", 10003019, 4000)
 acc4 = AccountFactory.create("saving", "Kebede", 10003022, 1000)
 
-print("\n--- Testing Branch Hierarchy & Recursive Totals ---")
-# Build a tree structure: Head Office -> Regions -> Branches
+
 bole_branch = Branch("Bole Branch", accounts=[acc1])
 piassa_branch = Branch("Piassa Branch", accounts=[acc2])
 addis_ababa_region = Branch("Addis Ababa Region", sub_branches=[bole_branch, piassa_branch])
@@ -232,7 +238,6 @@ head_office = Branch("Head Office", sub_branches=[addis_ababa_region, snnp_regio
 total_bank_balance = Branch.recursive_total_balance(head_office)
 print(f"Total Bank Balance (Head Office Hierarchy): {total_bank_balance} ETB")
 
-print("\n--- Testing Transfers Graph & BFS Traversal ---")
 network = BankNetwork()
 network.add_route("CBE-1", "CBE-Bole")
 network.add_route("CBE-1", "CBE-Piassa")
