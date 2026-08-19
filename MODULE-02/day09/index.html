@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grocery Shopping List</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Grocery List</h1>
+
+    <!-- Form for adding items -->
+    <form id="item-form">
+      <input 
+        type="text" 
+        id="item-input" 
+        placeholder="Add an item (e.g., Milk)" 
+        required 
+        autocomplete="off" 
+      />
+      <button type="submit">Add Item</button>
+    </form>
+
+    <!-- Counter -->
+    <div class="counter-container">
+      Total Items: <span id="item-counter">0</span>
+    </div>
+
+    <!-- Dynamic List -->
+    <ul id="shopping-list"></ul>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
