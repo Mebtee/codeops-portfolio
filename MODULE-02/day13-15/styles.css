@@ -295,7 +295,6 @@ footer {
 
 /* --- Responsive Design (Mobile & Tablet) --- */
 
-/* For Tablets and smaller desktop screens */
 @media (max-width: 960px) {
     main {
         flex-direction: column;
@@ -307,7 +306,6 @@ footer {
     }
 }
 
-/* For Mobile Phones */
 @media (max-width: 600px) {
     header {
         flex-direction: column;
