@@ -1,5 +1,5 @@
 .menu-card {
-  border: 1px solid #e0e0e0;
+  border: 2px solid black;
   border-radius: 8px;
   overflow: hidden;
   background: green;
@@ -23,5 +23,5 @@
 
 .menu-card-body p {
   font-size: 0.85rem;
-  color: #555;
+  color: white;
 }
