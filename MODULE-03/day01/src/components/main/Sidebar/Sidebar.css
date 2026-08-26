@@ -1,3 +1,9 @@
+.aside {
+  grid-area: aside;
+  overflow-y: auto;
+  background-color: green;
+}
+
 .sidebar-item {
   padding: 12px 0;
 }

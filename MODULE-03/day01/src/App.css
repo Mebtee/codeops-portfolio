@@ -34,20 +34,6 @@ body,
   background-color: green;
 }
 
-.aside {
-  grid-area: aside;
-  overflow-y: auto;
-  background-color: green;
-}
-
-.header {
-  grid-area: header;
-}
-
-.footer {
-  grid-area: footer;
-}
-
 @media (max-width: 768px) {
   .layout {
     grid-template-columns: 1fr;
