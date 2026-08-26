@@ -31,11 +31,13 @@ body,
 .main {
   grid-area: main;
   overflow-y: auto;
+  background-color: green;
 }
 
 .aside {
   grid-area: aside;
   overflow-y: auto;
+  background-color: green;
 }
 
 .header {
