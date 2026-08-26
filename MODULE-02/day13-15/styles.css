@@ -137,7 +137,7 @@ main {
 
 /* Right Column: Cart */
 .cart-sidebar {
-    width: 380px;
+    width: 280px;
     background: var(--white);
     border-radius: 12px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.06);
@@ -174,21 +174,8 @@ main {
 
 .cart-item {
     display: flex;
-    gap: 1rem;
+    justify-content: space-between;
     align-items: center;
-}
-
-.item-image {
-    width: 50px;
-    height: 50px;
-    background-color: #eaeaea;
-    border-radius: 8px;
-    background-size: cover;
-    background-position: center;
-}
-
-.item-details {
-    flex: 1;
 }
 
 .item-title {
@@ -196,17 +183,10 @@ main {
     font-weight: 600;
 }
 
-.item-note {
-    font-size: 0.75rem;
-    color: var(--text-light);
-    margin-top: 0.2rem;
-}
-
 .item-actions {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.5rem;
+    align-items: center;
+    gap: 0.8rem;
 }
 
 .qty-control {
