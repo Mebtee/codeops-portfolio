@@ -1,8 +1,17 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import Card from "../Card/Card";
 import "./Dish.css";
 
-function Dish({ name, price, spicy, image, currency }) {
+function Dish({ name, price, spicy, image, currency, onAdd }) {
+  const [count, setCount] = useState(0);
+
+  function handleAdd() {
+    const nextCount = count + 1;
+    setCount(nextCount);
+    if (onAdd) onAdd(price);
+  }
+
   return (
     <Card>
       <div className="menu-card">
@@ -15,6 +24,10 @@ function Dish({ name, price, spicy, image, currency }) {
           {typeof spicy === "boolean" && spicy && (
             <span className="dish-spicy">🌶️ Spicy</span>
           )}
+          <button type="button" onClick={handleAdd}>
+            Add
+          </button>
+          {count > 0 && <p className="dish-count">Added: {count}</p>}
         </div>
       </div>
     </Card>
@@ -27,10 +40,12 @@ Dish.propTypes = {
   spicy: PropTypes.bool,
   image: PropTypes.string,
   currency: PropTypes.string,
+  onAdd: PropTypes.func,
 };
 
 Dish.defaultProps = {
   currency: "$",
+  onAdd: () => {},
 };
 
 export default Dish;
