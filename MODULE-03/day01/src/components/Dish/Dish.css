@@ -25,3 +25,13 @@
   font-size: 0.85rem;
   color: white;
 }
+
+.dish-count {
+  margin-top: 6px;
+  font-weight: bold;
+}
+
+.dish-spicy {
+  color: #ffd700;
+  font-weight: bold;
+}
