@@ -14,3 +14,57 @@
 section h1 {
   text-align: center;
 }
+
+.cart-checkout {
+  border: 2px solid black;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 16px auto;
+  max-width: 480px;
+}
+
+.cart-checkout h2 {
+  text-align: center;
+}
+
+.cart-checkout ul {
+  list-style: none;
+  padding: 0;
+}
+
+.cart-checkout li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.cart-checkout li button {
+  padding: 2px 8px;
+  border: 1px solid black;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+.cart-checkout li button:last-child {
+  background: green;
+  color: white;
+}
+
+.cart-checkout p {
+  text-align: center;
+  font-size: 1.1rem;
+  margin: 10px 0;
+}
+
+.cart-checkout > button {
+  display: block;
+  margin: 0 auto;
+  padding: 8px 16px;
+  border: 2px solid black;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
