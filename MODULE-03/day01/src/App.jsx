@@ -1,21 +1,24 @@
 import './App.css'
+import CartProvider from './cart/CartProvider'
 import Header from './components/Header/Header'
-import Menu from './components/main/Menu/Menu'
+import Menu from './Menu'
 import Sidebar from './components/main/Sidebar/Sidebar'
 import Footer from './components/Footer/Footer'
 
 function App() {
   return (
-    <div className="layout">
-      <Header />
-      <main className="main">
-        <Menu />
-      </main>
-      <aside className="aside">
-        <Sidebar />
-      </aside>
-      <Footer />
-    </div>
+    <CartProvider>
+      <div className="layout">
+        <Header />
+        <main className="main">
+          <Menu />
+        </main>
+        <aside className="aside">
+          <Sidebar />
+        </aside>
+        <Footer />
+      </div>
+    </CartProvider>
   )
 }
 
