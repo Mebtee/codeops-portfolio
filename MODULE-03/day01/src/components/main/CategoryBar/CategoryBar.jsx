@@ -1,12 +1,7 @@
 import "./CategoryBar.css";
-import { dishs } from "../../Dish/dishs";
+import PropTypes from "prop-types";
 
-const categories = [
-  "all",
-  ...new Set(dishs.map((dish) => dish.category)),
-];
-
-function CategoryBar({ selected, onSelect }) {
+function CategoryBar({ categories, selected, onSelect }) {
   return (
     <div className="category-bar">
       {categories.map((category) => (
@@ -22,5 +17,11 @@ function CategoryBar({ selected, onSelect }) {
     </div>
   );
 }
+
+CategoryBar.propTypes = {
+  categories: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selected: PropTypes.string.isRequired,
+  onSelect: PropTypes.func.isRequired,
+};
 
 export default CategoryBar;
