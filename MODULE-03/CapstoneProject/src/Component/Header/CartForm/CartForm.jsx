@@ -1,5 +1,3 @@
-import Signup from '../../Signup/Signup';
-import Login from '../../Login/Login';
 import './CartForm.css';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../../store/useCartStore';
@@ -45,8 +43,8 @@ function CartForm() {
           </>
         ) : (
           <>
-            <Link to="/login">Login</Link>
-            <Link to="/signup">Register</Link>
+            <Link to="/login">Account</Link>
+            <Link to="/signup">Join the Mesob Family</Link>
           </>
         )}
       </div>
