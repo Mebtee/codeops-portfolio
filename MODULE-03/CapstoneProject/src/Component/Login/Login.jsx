@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import './Login.css';
-import loginImg from './LoginImage.png';
+import loginImg from '../../assets/food.jpg';
 import { useAuthStore } from '../../store/useAuthStore';
 
 const schema = z.object({
