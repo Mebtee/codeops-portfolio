@@ -25,7 +25,7 @@ const BENEFITS = [
   {
     Icon: CoffeeIcon,
     title: 'Welcome Gift: Pure Tej or Buna',
-    body: 'Enjoy a complimentary flask of house-fermented Tej (or honey-wine) or a personalized Jebena Buna coffee ceremony with your inaugural banquet booking.',
+    body: 'Enjoy a complimentary flask of house-fermented Tej (pure honey wine) or a personalized Jebena coffee ceremony with your inaugural banquet booking.',
   },
   {
     Icon: HeartIcon,
@@ -35,17 +35,17 @@ const BENEFITS = [
   {
     Icon: ClockIcon,
     title: 'Fasting Calendar Alerts',
-    body: "Timely seasonal notifications for Tsom fasting periods, Chef's Bayaynetu spreads, and excellent lenten specialties.",
+    body: "Timely seasonal notifications for Tsom fasting periods, Chef's Bayaynetu spreads, and lenten specialties.",
   },
   {
     Icon: TruckIcon,
     title: 'Express Addis Delivery',
-    body: 'Save Buna, Kacchasi, Old Airport, or Sarbet drop-offs for fast clay-pot temperature delivery straight to your door.',
+    body: 'Save Bole, Kazanchis, Old Airport, or Sarbet drop-offs for fast clay-pot temperature delivery straight to your doorstep.',
   },
   {
     Icon: GatherIcon,
     title: 'Priority Mesob Table Reservations',
-    body: 'Skip standard waitlists for weekend Kirar acoustic sets and green-coffee roasting ceremonies.',
+    body: 'Skip standard waitlists for weekend live Kirar acoustic sets and evening green-coffee roasting ceremonies.',
   },
 ];
 

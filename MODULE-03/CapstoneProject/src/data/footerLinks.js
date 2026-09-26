@@ -14,7 +14,7 @@ export const FOOTER_BRAND = {
     'Sharing traditions from the Ethiopian',
     'highlands — one Gursha at a time.',
   ],
-  note: 'Traditional Coffee Ceremony at 4:00 PM',
+  note: 'Traditional Coffee Ceremony daily at 4:00 PM',
 };
 
 // Column 1 of the footer is the brand block; these supply columns 2-4.
