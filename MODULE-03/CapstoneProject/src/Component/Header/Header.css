@@ -1,0 +1,22 @@
+.header {
+  width: 100%;
+  height: 80px;
+  padding: 0px 16px;
+  background-color: rgba(254, 247, 245, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+
+.header-container{
+    position: relative;
+    left: 16px;
+    width: 1248px;
+    height: 80px;
+    padding: 0px 32px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+}

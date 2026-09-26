@@ -1,0 +1,23 @@
+.nav-container {
+  position: relative;
+  left: 388.1;
+  width: 472.2px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #58413d;
+  justify-content: space-between;
+}
+
+.nav-container a {
+  text-decoration: none;
+  color: #58413d;
+}
+.nav-container p {
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 600;
+  letter-spacing: 0.28px;
+  line-height: 20px;
+  align-items: center;
+}
