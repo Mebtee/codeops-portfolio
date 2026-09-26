@@ -7,27 +7,20 @@ import { useAuth } from '../../../store/useAuthStore';
 function CartForm() {
   const { logout, user } = useAuth();
   const { count, subtotal } = useCart();
-  const subTotalWithFormats = fmt(subtotal);
+
   return (
     <div className="cart-form">
       <div className="cart-container">
-        <Link to={'orderCart'}>
+        <Link to="/orderCart" aria-label={`Cart, ${count} items, ${fmt(subtotal)}`}>
           <div className="cart-inner-holder">
             <div className="count">
-              {{ count } && (
-                <div>
-                  <p>{count}</p>
-                  <p>Item</p>
-                </div>
-              )}
+              <div>
+                <p>{count}</p>
+                <p>Item</p>
+              </div>
             </div>
-
             <div className="total">
-              {{ subtotal } && (
-                <div>
-                  <p>{subTotalWithFormats}</p>
-                </div>
-              )}
+              <p>{fmt(subtotal)}</p>
             </div>
           </div>
         </Link>
@@ -43,8 +36,10 @@ function CartForm() {
           </>
         ) : (
           <>
-            <Link to="/login">Account</Link>
-            <Link to="/signup">Join the Mesob Family</Link>
+            <Link to="/login">Sign In</Link>
+            <Link to="/signup" className="register-btn">
+              Register
+            </Link>
           </>
         )}
       </div>
