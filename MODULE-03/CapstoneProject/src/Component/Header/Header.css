@@ -1,22 +1,103 @@
 .header {
-  width: 100%;
-  height: 80px;
-  padding: 0px 16px;
-  background-color: rgba(254, 247, 245, 0.9);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 253, 250, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.header-inner {
+  position: relative;
+  max-width: 1248px;
+  margin: 0 auto;
+  padding: 14px 32px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  align-content: center;
+  justify-content: space-between;
+  gap: 24px;
 }
 
-.header-container{
-    position: relative;
-    left: 16px;
-    width: 1248px;
-    height: 80px;
-    padding: 0px 32px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.header-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: #fff;
+  background: var(--red);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+.header-brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.header-brand-text b {
+  font-family: var(--serif);
+  font-size: 21px;
+  color: var(--ink);
+  letter-spacing: 0.2px;
+}
+.header-brand-text small {
+  margin-top: 2px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.header-cta {
+  padding: 10px 20px;
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .header-inner {
+    padding: 12px 28px;
+    gap: 16px;
+  }
+  .header-brand-text small {
+    display: none;
+  }
+  .header-brand-text b {
+    font-size: 19px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .header-inner {
+    padding: 12px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-inner {
+    padding: 10px 16px;
+  }
+  .header-mark {
+    width: 38px;
+    height: 38px;
+  }
+  .header-brand-text b {
+    font-size: 17px;
+  }
+  .header-cta {
+    padding: 8px 14px;
+    font-size: 12.5px;
+  }
 }
