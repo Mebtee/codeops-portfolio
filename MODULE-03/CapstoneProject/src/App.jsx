@@ -31,7 +31,7 @@ function App() {
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Layout />}>
-              <Route index element={<TodaySpecial />} />
+              <Route index element={<Signup />} />
               <Route path="signup" element={<Signup />} />
               <Route path="login" element={<Login />} />
               <Route path="menu" element={<FullMenu />} />
