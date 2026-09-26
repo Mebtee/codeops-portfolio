@@ -4,6 +4,7 @@ import Layout from './Layout';
 import ErrorBoundary from './ErrorBoundary';
 import './App.css';
 
+const Home = lazy(() => import('./Component/Home/Home'));
 const TodaySpecial = lazy(
   () => import('./Component/TodaySpecial/TodaySpecial')
 );
@@ -31,7 +32,7 @@ function App() {
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Layout />}>
-              <Route index element={<Signup />} />
+              <Route index element={<Home />} />
               <Route path="signup" element={<Signup />} />
               <Route path="login" element={<Login />} />
               <Route path="menu" element={<FullMenu />} />
