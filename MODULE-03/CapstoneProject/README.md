@@ -31,11 +31,13 @@ form validation, and code-splitting in a single React application.
 - **Multiple Payment Methods** — Telebirr (with a simulated verification step), CBE Birr, cash/POS, and
   Amole/Awash.
 - **Code-Split Routing** — every page is `React.lazy`-loaded behind a shared `Suspense` boundary, so
-  most pages ship as their own chunk on first visit instead of in the initial bundle. (Two pages are
-  currently excluded from this — see [Known Code Issues](#known-code-issues).)
+  pages ship as their own chunks on first visit instead of in the initial bundle.
 - **Error Boundary** — a class component catches render failures anywhere in the tree and offers a
   reload instead of a blank page.
-- **Demo Auth** — login and signup forms persist a session so the header can swap between guest and
+- **Member Join Screen** — the home route is a two-column sign-up screen: a storytelling left panel
+  (member badge, welcome gift, Gursha points) beside a working join form with quick-auth buttons and
+  inline Zod validation.
+- **Demo Auth** — login and join forms persist a session so the header can swap between guest and
   member states.
 
 ---
@@ -114,7 +116,7 @@ CapstoneProject/
         ├── CurrentOrderCart/     # Basket + price ledger
         ├── CheckoutDelivery/     # Address, timing, payment, confirmation
         ├── Login/                # Sign-in form
-        ├── Signup/               # Registration form
+        ├── Signup/               # Member join screen (home route)
         ├── Header/               # Logo, Nav, cart summary, account links
         ├── Footer/               # Brand, link columns, lower legal bar
         ├── NotFound404/          # 404 page plus house-favourite shortcuts
@@ -128,15 +130,15 @@ CapstoneProject/
 
 | Path | Page | Notes |
 | --- | --- | --- |
-| `/` | `TodaySpecial` | Landing page; also the `index` route |
-| `/future` | `TodaySpecial` | "Featured Dish" nav target, currently aliases the landing page |
+| `/` | `Signup` | Home route — the member join screen |
+| `/signup` | `Signup` | Alias of `/`, so the header CTA and footer links keep working |
+| `/future` | `TodaySpecial` | The restaurant landing page (dining story, Je Buna, injera card) |
 | `/menu` | `FullMenu` | Search, category filters, add-to-cart |
 | `/menu/:id` | `RoyalDish` | Dish detail by slug, e.g. `/menu/doro-wat` |
 | `/orderCart` | `CurrentOrderCart` | Quantity steppers, coupon, kitchen note |
 | `/delivery` | `CheckoutDelivery` | Three-step checkout ending in confirmation |
-| `/Delibery` | redirect → `/delivery` | Keeps the misspelled nav link working |
+| `/Delibery` | redirect → `/delivery` | Keeps the misspelled link working |
 | `/login` | `Login` | Phone + password, demo sign-in |
-| `/signup` | `Signup` | Registration with password confirmation |
 | `*` | `NotFound404` | Catch-all with recovery links |
 
 ---
@@ -201,7 +203,7 @@ localStorage pattern for any non-Zustand persistence.
 ## Notable Implementation Details
 
 - **Route-level code splitting** — `App.jsx` lazy-loads all eight page components and renders them
-  behind one `Suspense` fallback. A production build emits a separate chunk per page for six of them.
+  behind one `Suspense` fallback. A production build emits a separate JS and CSS chunk per page.
 - **Option pricing** — `RoyalDish` adds surcharges for 100% teff injera and an extra braised egg, then
   passes both a human-readable `option` string and a numeric `optionPrice` into `addItem`, so the cart
   can display the choice *and* re-derive the line total.
@@ -224,6 +226,9 @@ This is a front-end capstone with no server, so the following are simulated in t
 
 - **Login and signup** accept any input that passes validation and store the session locally. There is
   no password check, session expiry, or user database.
+- **The join screen promises a 4-digit SMS code but never asks for it.** Submitting the form logs the
+  member in immediately and shows a confirmation that states a code was sent. There is no OTP step, and
+  no email, password, or terms-of-service collection — the screen is a single first step by design.
 - **Telebirr verification** is a fixed 900 ms delay before the button reports "Verified".
 - **Order confirmation** is a 700 ms delay followed by a client-side order number derived from
   `Date.now()`. No payment is processed and no message is sent.
@@ -241,9 +246,6 @@ These were confirmed by running `npm run lint` and `npm run build` against the p
 - **`Store/` vs `store/`** — the directory is `src/Store/`, but every import uses `../store/...`. This
   resolves on case-insensitive filesystems such as Windows and macOS, but will fail on a
   case-sensitive Linux CI or build host. Either rename the directory to `store/` or update the imports.
-- **Code splitting is partially defeated** — `Header/CartForm/CartForm.jsx` statically imports `Login`
-  and `Signup` without using them, so Vite reports `INEFFECTIVE_DYNAMIC_IMPORT` for both and pulls them
-  back into the main entry chunk. Removing those two unused imports restores the lazy split.
 - **Dead components referencing removed APIs** — `Component/CheckoutForm.jsx`, `Component/DishList.jsx`,
   and `Component/Navbar.jsx` are not routed anywhere and still reach for store APIs that no longer
   exist (`state.cart`, `state.addToCart`). `Component/TodaySpecial/Container/Container.jsx` references an
@@ -254,8 +256,8 @@ These were confirmed by running `npm run lint` and `npm run build` against the p
   the guard never does anything. Oxlint flags both as `no-constant-binary-expression`.
 - **Leftover debug logging** — `RoyalDish.jsx` logs the resolved dish on every load, and its `useEffect`
   has an incomplete dependency array (`exhaustive-deps` warning).
-- **Unused state and imports** — Oxlint reports unused variables in `Header.jsx`, `FullMenu.jsx`,
-  `RoyalDish.jsx`, and `CheckoutForm.jsx`.
+- **Unused state and imports** — Oxlint reports unused variables in `Header.jsx` (`Link`, `logout`,
+  `user`), `FullMenu.jsx` (`useEffect`), `RoyalDish.jsx` (`saved`, `setSaved`), and `CheckoutForm.jsx`.
 - **Hardcoded defaults** — the checkout form ships with a filled-in sample address, phone, and email as
   its default values, which makes the form look pre-submitted on first open.
 
