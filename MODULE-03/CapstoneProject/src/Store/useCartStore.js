@@ -3,8 +3,8 @@ import { persist } from 'zustand/middleware';
 import { findDish } from '../api';
 
 export const COUPON_CODE = 'GURSHA2025';
-export const COUPON_DISCOUNT = 200;
-export const FREE_DELIVERY_MIN = 1200;
+const COUPON_DISCOUNT = 200;
+const FREE_DELIVERY_MIN = 1200;
 const PACKAGING_FEE = 60;
 const DELIVERY_FEE = 80;
 const VAT_RATE = 0.15;

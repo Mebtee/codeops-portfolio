@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import './RoyalDish.css';
 import ImgBox from '../UI/ImgBox';
-import { useCart } from '../../store/useCartStore';
+import { useCart } from '../../Store/useCartStore';
 import { fmt } from '../../data/dishes';
 import { useMenuData } from '../../api';
 
@@ -15,7 +15,6 @@ function RoyalDish() {
   const [injera, setInjera] = useState('blend');
   const [sides, setSides] = useState(['ayib']);
   const [qty, setQty] = useState(1);
-  const [saved, setSaved] = useState(false);
   const [added, setAdded] = useState(false);
 
   const TEFF_EXTRA = 60;
@@ -23,16 +22,6 @@ function RoyalDish() {
 
   const visible = dishes ? dishes.filter((d) => d.id === id) : [];
   const visibleFinal = visible[0];
-
-  useEffect(() => {
-    if (!loading && visibleFinal) {
-      // console.log("dish is = ",dishes)
-      visible.map((d) => console.log(d.name));
-      console.log('visible is ', visible);
-      console.log('Visible Final is ', visibleFinal);
-      console.log("amharic name is ",visibleFinal.amName );
-    }
-  }, [id, dishes, loading, visibleFinal]);
 
   if (loading) {
     return <div className="loading-state">it's loading... (Loading Menu...)</div>;

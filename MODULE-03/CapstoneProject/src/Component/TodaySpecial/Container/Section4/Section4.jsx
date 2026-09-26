@@ -1,5 +1,5 @@
 import '../../TodaySpecial.css'; // page-level css lives one folder up
-import { useCart } from '../../../../store/useCartStore';
+import { useCart } from '../../../../Store/useCartStore';
 import { fmt } from '../../../../data/dishes';
 
 // Clay Je Buna ceremony info + Extra injera add-on card

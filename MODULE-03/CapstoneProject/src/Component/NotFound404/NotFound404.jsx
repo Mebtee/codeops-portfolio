@@ -3,7 +3,7 @@ import './NotFound404.css'
 import { Link, useNavigate } from 'react-router-dom';
 import './NotFound404.css';
 import ImgBox from '../UI/ImgBox';
-import { useCart } from '../../store/useCartStore';
+import { useCart } from '../../Store/useCartStore';
 import { useMenuData } from '../../api';
 import { fmt } from '../../data/dishes';
 

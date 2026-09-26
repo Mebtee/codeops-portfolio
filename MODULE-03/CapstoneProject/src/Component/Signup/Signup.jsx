@@ -19,7 +19,7 @@ import {
   LockIcon,
   EthiopiaFlag,
 } from '../UI/icons';
-import { useAuthStore } from '../../store/useAuthStore';
+import { useAuthStore } from '../../Store/useAuthStore';
 
 const BENEFITS = [
   {
