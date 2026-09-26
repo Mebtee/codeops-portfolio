@@ -100,6 +100,8 @@ CapstoneProject/
     ├── data/
     │   ├── dishes.js             # CATEGORIES, fmt() currency helper, offline DISHES
     │   └── footerLinks.js        # Footer brand, columns, and legal links
+    ├── assets/
+    │   └── food.jpg              # Shared dish photo used by every ImgBox
     ├── context/
     │   └── storage.js            # try/catch localStorage read/write helpers
     ├── Store/
@@ -208,9 +210,10 @@ localStorage pattern for any non-Zustand persistence.
   duplicating conditionals in JSX.
 - **A guard for direct checkout** — `CheckoutDelivery` renders an empty-basket state if it is reached
   without items, so the URL cannot bypass the cart.
-- **Photo placeholders** — `ImgBox` renders an accessible labelled tile with `role="img"` and an
-  `aria-label` instead of a broken image, so real photography can be dropped in later without touching
-  layout or accessibility.
+- **One shared dish photo** — `ImgBox` is the single seam for all nine image slots (menu cards, dish
+  gallery, cart, checkout summary, 404 favourites). It renders the shared `src/assets/food.jpg` with the
+  caller's `label` as `alt` text, so every dish is a placeholder-free `<img>` and swapping in real
+  per-dish photography later means editing one file.
 - **Currency formatting** — `fmt()` in `src/data/dishes.js` is the single place that renders ETB.
 
 ---
@@ -225,7 +228,9 @@ This is a front-end capstone with no server, so the following are simulated in t
 - **Order confirmation** is a 700 ms delay followed by a client-side order number derived from
   `Date.now()`. No payment is processed and no message is sent.
 - **The order note and delivery address** are never transmitted anywhere.
-- **Dish photography** is entirely placeholder tiles.
+- **Dish photography** is a single shared image (`src/assets/food.jpg`) reused for every dish, not
+  per-dish photography. It is also a 662 kB / 1408x768 JPEG served for slots as small as 54px, so the
+  payload is worth compressing or adding `srcset` variants for.
 - **Search** matches dish names only, not descriptions or ingredients.
 - **`/future`** is wired to the landing page; the "Featured Dish" nav item is not its own page yet.
 
