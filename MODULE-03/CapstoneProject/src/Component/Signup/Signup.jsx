@@ -13,6 +13,11 @@ import {
   GatherIcon,
   PhoneIcon,
   GoogleIcon,
+  StarIcon,
+  UserIcon,
+  MailIcon,
+  LockIcon,
+  EthiopiaFlag,
 } from '../UI/icons';
 import { useAuthStore } from '../../store/useAuthStore';
 
@@ -25,22 +30,22 @@ const BENEFITS = [
   {
     Icon: HeartIcon,
     title: 'Communal Gursha Points',
-    body: 'Earn generous loyalty points redeemable for hand-poured pure Tej flasks, prime Siga Tibs, and bespoke banquet upgrades.',
+    body: 'Earn generous loyalty points redeemable for hand-poured pure Teff injera, prime Siga Tibs, and bespoke banquet upgrades.',
   },
   {
     Icon: ClockIcon,
-    title: 'Feasting Calendar Alerts',
-    body: "Timely seasonal notifications for Tsom fasting periods, Chef's Bayenets, and excellent seasonal specialties.",
+    title: 'Fasting Calendar Alerts',
+    body: "Timely seasonal notifications for Tsom fasting periods, Chef's Bayaynetu spreads, and excellent lenten specialties.",
   },
   {
     Icon: TruckIcon,
     title: 'Express Addis Delivery',
-    body: 'Save Buna, Kacchasi, Old Airport, or Sarbet drop-offs for fast day-to-temperature delivery straight to your door.',
+    body: 'Save Buna, Kacchasi, Old Airport, or Sarbet drop-offs for fast clay-pot temperature delivery straight to your door.',
   },
   {
     Icon: GatherIcon,
     title: 'Priority Mesob Table Reservations',
-    body: 'Skip standard waits before weekend events and reserve premium tables for intimate gatherings.',
+    body: 'Skip standard waitlists for weekend Kirar acoustic sets and green-coffee roasting ceremonies.',
   },
 ];
 
@@ -48,7 +53,7 @@ const PREFERENCES = [
   'All Heritage Delicacies',
   'Fasting & Vegan (Tsom)',
   'Halal Certified Meat',
-  '100% Pure Tej (Gluten-Free)',
+  '100% Pure Teff (Gluten-Free)',
 ];
 
 const schema = z
@@ -111,7 +116,9 @@ function Signup() {
       <div className="signup-grid">
         <div className="signup-col-left">
           <aside className="signup-side">
-            <span className="badge gold">MEMBER CIRCLE</span>
+            <span className="badge gold">
+              <StarIcon size={13} /> MEMBER CIRCLE
+            </span>
             <h1>
               Become an Honored
               <br />
@@ -148,7 +155,7 @@ function Signup() {
                 Sharing from the same mesob is the ancient covenant of love and
                 trust.
               </p>
-              <small>— Haile Selassie</small>
+              <small>— Habesha Proverb</small>
             </figcaption>
           </figure>
         </div>
@@ -186,11 +193,14 @@ function Signup() {
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="field">
                 <label htmlFor="signup-name">Full Name (ሙሉ ስም)</label>
-                <input
-                  id="signup-name"
-                  {...register('name')}
-                  placeholder="e.g. Abebe Bekila or Genet Tadesse"
-                />
+                <div className="input-wrap">
+                  <UserIcon size={16} />
+                  <input
+                    id="signup-name"
+                    {...register('name')}
+                    placeholder="e.g. Abebe Bikila or Genet Tadesse"
+                  />
+                </div>
                 {errors.name && <span className="err">{errors.name.message}</span>}
               </div>
 
@@ -199,7 +209,9 @@ function Signup() {
                   Ethiopian Mobile Number (ስልክ ቁጥር)
                 </label>
                 <div className="phone-wrap">
-                  <span className="prefix">+251</span>
+                  <span className="prefix">
+                    <EthiopiaFlag size={16} /> +251
+                  </span>
                   <input
                     id="signup-phone"
                     inputMode="tel"
@@ -208,55 +220,73 @@ function Signup() {
                   />
                 </div>
                 <small className="helper">
-                  We'll send a code to verify your Ethiopian mobile number.
+                  We will send a 4-digit code to verify your Ethiopian mobile
+                  number.
                 </small>
                 {errors.phone && <span className="err">{errors.phone.message}</span>}
               </div>
 
               <div className="field">
                 <label htmlFor="signup-email">Email Address</label>
-                <input
-                  id="signup-email"
-                  type="email"
-                  {...register('email')}
-                  placeholder="guest@mesobhouse.com"
-                />
+                <div className="input-wrap">
+                  <MailIcon size={16} />
+                  <input
+                    id="signup-email"
+                    type="email"
+                    {...register('email')}
+                    placeholder="guest@mesobhouse.com"
+                  />
+                </div>
                 {errors.email && <span className="err">{errors.email.message}</span>}
               </div>
 
               <div className="two">
                 <div className="field">
                   <label htmlFor="signup-password">Password</label>
-                  <input
-                    id="signup-password"
-                    type="password"
-                    {...register('password')}
-                    placeholder="Minimum 8 characters"
-                  />
+                  <div className="input-wrap">
+                    <LockIcon size={16} />
+                    <input
+                      id="signup-password"
+                      type="password"
+                      {...register('password')}
+                      placeholder="Minimum 8 characters"
+                    />
+                  </div>
                   {errors.password && (
                     <span className="err">{errors.password.message}</span>
                   )}
                 </div>
                 <div className="field">
                   <label htmlFor="signup-confirm">Confirm Password</label>
-                  <input
-                    id="signup-confirm"
-                    type="password"
-                    {...register('confirm')}
-                    placeholder="Repeat password"
-                  />
+                  <div className="input-wrap">
+                    <LockIcon size={16} />
+                    <input
+                      id="signup-confirm"
+                      type="password"
+                      {...register('confirm')}
+                      placeholder="Repeat password"
+                    />
+                  </div>
                   {errors.confirm && (
                     <span className="err">{errors.confirm.message}</span>
                   )}
                 </div>
               </div>
-              <div className="char-meter" aria-live="polite">
-                <span className={password.length >= 8 ? 'meter-dots is-met' : 'meter-dots'}>
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <i key={i} className={i < password.length ? 'on' : ''} />
-                  ))}
+
+              <div className="strength" aria-live="polite">
+                <span className="strength-track">
+                  <span
+                    className={password.length >= 8 ? 'strength-fill is-met' : 'strength-fill'}
+                    style={{ width: `${Math.min((password.length / 8) * 100, 100)}%` }}
+                  />
                 </span>
-                <small>{password.length >= 8 ? '8 chars' : `${password.length}/8 chars`}</small>
+                <small>
+                  {password.length >= 8
+                    ? 'Strong password'
+                    : password.length
+                      ? `${password.length}/8 characters`
+                      : '8 characters minimum'}
+                </small>
               </div>
 
               <div className="field">
@@ -300,7 +330,7 @@ function Signup() {
               )}
 
               <button className="btn-red auth-submit" type="submit">
-                Create Account &amp; Receive Welcome Gursha →
+                Create Account &amp; Welcome Gursha -&gt;
               </button>
             </form>
           )}
