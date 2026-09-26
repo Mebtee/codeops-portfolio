@@ -1,0 +1,9 @@
+.account-main{
+    padding-top: 80px;
+    background-color: #FFF8F6;
+    display: grid;
+    grid-template-rows: 55px 1fr;
+
+    
+
+}

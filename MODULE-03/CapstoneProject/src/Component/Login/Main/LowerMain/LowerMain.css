@@ -1,0 +1,28 @@
+.lower-main {
+  padding: 0px 48px 72px 48px;
+}
+.lower-main-container {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.left-column {
+  grid-column: span 5;
+  grid-row: span 1;
+  gap: 24px;
+}
+
+.lower-main-left {
+  color: black;
+}
+
+.left-column-container {
+  gap: 16px;
+  background-color: aqua;
+}
+
+.overlay{
+  gap: 8px;
+  padding: 4px 12px;
+}
