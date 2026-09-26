@@ -1,0 +1,32 @@
+.footer-brand-title {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--red);
+}
+
+.footer-brand-tagline p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.footer-brand-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding: 10px 12px;
+  background: var(--cream-2);
+  border-radius: 8px;
+  color: var(--ink);
+}
+
+.footer-brand-note svg {
+  flex-shrink: 0;
+  color: var(--gold);
+}
+
+.footer-brand-note p {
+  font-size: 13px;
+  line-height: 1.4;
+}

@@ -1,0 +1,32 @@
+.footer-lower {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.footer-lower-copyright {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.footer-lower-links {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-lower-links a {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.footer-lower-links a:hover {
+  color: var(--red);
+}
