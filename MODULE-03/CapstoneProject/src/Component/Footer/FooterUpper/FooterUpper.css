@@ -1,0 +1,24 @@
+.footer-upper {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
+.footer-card {
+  display: flex;
+  flex-direction: column;
+  gap: 11.2px;
+}
+
+@media (max-width: 900px) {
+  .footer-upper {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 40px;
+  }
+}
+
+@media (max-width: 520px) {
+  .footer-upper {
+    grid-template-columns: 1fr;
+  }
+}
