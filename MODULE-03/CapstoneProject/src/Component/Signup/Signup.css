@@ -320,18 +320,6 @@
   white-space: nowrap;
 }
 
-.char-meter {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: -6px 0 16px;
-}
-.char-meter small {
-  font-size: 10.5px;
-  color: var(--muted);
-  font-weight: 600;
-}
-
 .pref-chips {
   display: flex;
   flex-wrap: wrap;

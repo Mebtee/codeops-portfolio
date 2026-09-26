@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import './CheckoutDelivery.css';
 import ImgBox from '../UI/ImgBox';
-import { useCartStore, selectCart } from '../../store/useCartStore';
+import { useCartStore, selectCart } from '../../Store/useCartStore';
 import { fmt } from '../../data/dishes';
 
 const schema = z.object({

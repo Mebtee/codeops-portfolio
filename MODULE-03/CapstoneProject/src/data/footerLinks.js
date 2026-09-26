@@ -1,12 +1,7 @@
 
-export const BRAND_NAME = 'Mesob House';
-export const PHONE = '+251 911 234 567';
-export const PHONE_HREF = 'tel:+251911234567';
-export const ADDRESS = 'Bole Medhanialem, Addis Ababa';
-export const HOURS = [
-  'Tuesday – Sunday: 11:30 AM – 11:00 PM',
-  'Monday: Reserved for private banquets',
-];
+const PHONE = '+251 911 234 567';
+const PHONE_HREF = 'tel:+251911234567';
+const ADDRESS = 'Bole Medhanialem, Addis Ababa';
 
 export const FOOTER_BRAND = {
   title: 'Mesob House',
@@ -51,6 +46,3 @@ export const FOOTER_LEGAL_LINKS = [
   { text: 'Privacy Policy', href: '/' },
   { text: 'Terms of Table', href: '/' },
 ];
-
-export const FOOTER_COPYRIGHT =
-  '© 2025 Mesob House Habesha Dining. Authentic Ethiopian & Eritrean Heritage.';

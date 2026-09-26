@@ -1,8 +1,8 @@
 import './CartForm.css';
 import { Link } from 'react-router-dom';
-import { useCart } from '../../../store/useCartStore';
+import { useCart } from '../../../Store/useCartStore';
 import { fmt } from '../../../data/dishes';
-import { useAuth } from '../../../store/useAuthStore';
+import { useAuth } from '../../../Store/useAuthStore';
 
 function CartForm() {
   const { logout, user } = useAuth();

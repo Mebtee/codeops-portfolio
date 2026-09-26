@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import './Login.css';
 import loginImg from '../../assets/food.jpg';
-import { useAuthStore } from '../../store/useAuthStore';
+import { useAuthStore } from '../../Store/useAuthStore';
 
 const schema = z.object({
   phone: z.string().regex(/^\d{9,10}$/, 'Enter a valid 9–10 digit Ethiopian mobile number.'),

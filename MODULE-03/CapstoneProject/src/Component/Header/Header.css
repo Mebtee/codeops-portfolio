@@ -61,11 +61,6 @@
   gap: 14px;
   flex-shrink: 0;
 }
-.header-cta {
-  padding: 10px 20px;
-  white-space: nowrap;
-}
-
 @media (max-width: 1024px) {
   .header-inner {
     padding: 12px 28px;

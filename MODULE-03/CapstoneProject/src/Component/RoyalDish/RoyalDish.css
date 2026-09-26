@@ -198,21 +198,6 @@
   background: var(--peach);
 }
 
-.buy-row {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  margin: 8px 0 14px;
-}
-.buy-btn {
-  flex: 1;
-  font-size: 15px;
-  padding: 14px;
-}
-.doro-links {
-  display: flex;
-  gap: 24px;
-}
 .link-btn {
   background: none;
   border: none;
@@ -223,59 +208,6 @@
 }
 .link-btn:hover {
   text-decoration: underline;
-}
-
-.pairings {
-  margin-top: 56px;
-}
-.pairings h2 {
-  font-size: 26px;
-  margin-bottom: 20px;
-}
-.pair-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-.pair-card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-}
-.pair-img-wrap {
-  position: relative;
-}
-.pair-tag {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-}
-.pair-body {
-  padding: 14px 16px 16px;
-}
-.pair-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-.pair-title h3 {
-  font-size: 16px;
-}
-.pair-title b {
-  font-family: var(--serif);
-}
-.pair-body p {
-  color: var(--muted);
-  font-size: 12.5px;
-  line-height: 1.55;
-  margin: 8px 0 12px;
-  min-height: 58px;
-}
-.pair-body .btn-ghost {
-  padding: 8px 14px;
-  font-size: 12.5px;
 }
 
 @media (max-width: 900px) {

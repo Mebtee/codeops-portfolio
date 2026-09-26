@@ -9,31 +9,10 @@ const base = {
   strokeLinejoin: 'round',
 };
 
-export function PotIcon({ size = 24 }) {
-  return (
-    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" {...base}>
-      <path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z" />
-      <path d="M2.5 10h19" />
-      <path d="M8.5 6.5c0-1 .8-1.6.8-2.5S8.4 2.6 8.4 2" />
-      <path d="M12 6.5c0-1 .8-1.6.8-2.5S11.9 2.6 11.9 2" />
-      <path d="M15.5 6.5c0-1 .8-1.6.8-2.5S15.4 2.6 15.4 2" />
-    </svg>
-  );
-}
-
 export function HeartIcon({ size = 24 }) {
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" {...base}>
       <path d="M12 20s-7-4.3-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.7-7 9-7 9z" />
-    </svg>
-  );
-}
-
-export function LeafIcon({ size = 24 }) {
-  return (
-    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" {...base}>
-      <path d="M4 20c0-8 5-14 16-14 0 9-5 14-12 14H4z" />
-      <path d="M9 15c2-2.5 4.5-4 7.5-5" />
     </svg>
   );
 }
@@ -45,15 +24,6 @@ export function GatherIcon({ size = 24 }) {
       <path d="M3.5 20a5.5 5.5 0 0 1 11 0" />
       <path d="M16 5.5a3 3 0 0 1 0 5" />
       <path d="M17.5 14.5a5.5 5.5 0 0 1 3 5.5" />
-    </svg>
-  );
-}
-
-export function MapPinIcon({ size = 24 }) {
-  return (
-    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" {...base}>
-      <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z" />
-      <circle cx="12" cy="10" r="2.5" />
     </svg>
   );
 }
@@ -71,15 +41,6 @@ export function ClockIcon({ size = 24 }) {
     <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" {...base}>
       <circle cx="12" cy="12" r="8.5" />
       <path d="M12 7.5V12l3 2" />
-    </svg>
-  );
-}
-
-export function ArrowRightIcon({ size = 18 }) {
-  return (
-    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" {...base}>
-      <path d="M4 12h15" />
-      <path d="M13.5 6.5 20 12l-6.5 5.5" />
     </svg>
   );
 }

@@ -303,49 +303,6 @@
   margin-top: 4px;
 }
 
-.guarantee {
-  font-size: 12px;
-  color: var(--muted);
-  margin: 14px 0;
-}
-.confirm-btn {
-  width: 100%;
-  padding: 15px;
-  font-size: 15px;
-}
-.summary-links {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 12px;
-  font-size: 12.5px;
-}
-.summary-links a {
-  color: var(--muted);
-}
-
-.support-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--cream-2);
-  border-radius: 12px;
-  padding: 14px 16px;
-  margin-top: 18px;
-}
-.support-card b {
-  font-size: 13.5px;
-}
-.support-card small {
-  display: block;
-  color: var(--muted);
-  font-size: 11.5px;
-}
-.support-card .btn-ghost {
-  margin-left: auto;
-  padding: 8px 14px;
-  font-size: 12px;
-}
-
 .confirm-box {
   max-width: 640px;
   margin: 60px auto;

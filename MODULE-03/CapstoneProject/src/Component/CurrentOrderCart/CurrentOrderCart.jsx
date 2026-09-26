@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './CurrentOrderCart.css';
 import ImgBox from '../UI/ImgBox';
-import { useCart, COUPON_CODE } from '../../store/useCartStore';
+import { useCart, COUPON_CODE } from '../../Store/useCartStore';
 import { fmt } from '../../data/dishes';
 
 function CurrentOrderCart() {

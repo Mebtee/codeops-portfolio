@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './FullMenu.css';
 import ImgBox from '../UI/ImgBox';
 import { CATEGORIES, fmt } from '../../data/dishes';
-import { useCart } from '../../store/useCartStore';
+import { useCart } from '../../Store/useCartStore';
 import { useMenuData } from '../../api';
 
 function FullMenu() {
@@ -15,7 +15,6 @@ function FullMenu() {
   const visible = dishes.filter((d) => {
     const matchCat = cat === 'all' || d.cat === cat;
     const matchText = d.name.toLowerCase().includes(query.toLowerCase());
-    // console.log(d)
     return matchCat && matchText;
   });
 
