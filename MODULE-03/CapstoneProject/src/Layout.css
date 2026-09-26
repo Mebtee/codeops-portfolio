@@ -8,7 +8,10 @@
     min-height: 100vh;
     display: grid;
     grid-template-rows: auto 1fr auto;
-    background-color: #FFF8F6
+    background-color: #FFF8F6;
+    /* thin dark rule framing the page, per the reference */
+    border-left: 1px solid var(--ink);
+    border-right: 1px solid var(--ink);
 }
 
 .main-layout a{
