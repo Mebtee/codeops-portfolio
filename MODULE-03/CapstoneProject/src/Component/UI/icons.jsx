@@ -105,8 +105,7 @@ export function TruckIcon({ size = 24 }) {
   );
 }
 
-export function GoogleIcon({ size = 24 }) {
-  return (
+export function GoogleIcon({ size = 24 }) {  return (
     <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
       <path
         fill="#4285F4"
@@ -123,6 +122,57 @@ export function GoogleIcon({ size = 24 }) {
       <path
         fill="#EA4335"
         d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0A11.99 11.99 0 0 0 1.29 6.61l3.98 3.1C6.22 6.86 8.87 4.75 12 4.75z"
+      />
+    </svg>
+  );
+}
+
+export function StarIcon({ size = 24 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" {...base}>
+      <path d="M12 3.2l2.6 5.3 5.8.85-4.2 4.1 1 5.8-5.2-2.75-5.2 2.75 1-5.8-4.2-4.1 5.8-.85z" />
+    </svg>
+  );
+}
+
+export function UserIcon({ size = 24 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" {...base}>
+      <circle cx="12" cy="8" r="3.6" />
+      <path d="M4.8 20a7.2 7.2 0 0 1 14.4 0" />
+    </svg>
+  );
+}
+
+export function MailIcon({ size = 24 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" {...base}>
+      <rect x="2.8" y="5" width="18.4" height="14" rx="2" />
+      <path d="M3.5 6.5l8.5 6 8.5-6" />
+    </svg>
+  );
+}
+
+export function LockIcon({ size = 24 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" {...base}>
+      <rect x="4.5" y="10.5" width="15" height="9.5" rx="2" />
+      <path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7" />
+    </svg>
+  );
+}
+
+/* Ethiopian flag: green/yellow/red bands with the blue disc and star. */
+export function EthiopiaFlag({ size = 24 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
+      <rect x="1.5" y="5" width="21" height="5" fill="#159a48" />
+      <rect x="1.5" y="10" width="21" height="4" fill="#fcdd09" />
+      <rect x="1.5" y="14" width="21" height="5" fill="#da121a" />
+      <circle cx="12" cy="12" r="3.1" fill="#0f47af" />
+      <path
+        d="M12 9.9l.62 1.34 1.46.19-1.07 1 .27 1.44L12 13.18l-1.28.69.27-1.44-1.07-1 1.46-.19z"
+        fill="#fcdd09"
       />
     </svg>
   );

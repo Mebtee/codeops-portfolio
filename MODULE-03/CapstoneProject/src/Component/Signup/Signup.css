@@ -229,6 +229,22 @@
 .field input:focus {
   border-color: var(--red);
 }
+
+/* icon-leading input */
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-wrap > svg {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+.input-wrap input {
+  padding-left: 36px;
+}
 .field .two {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -257,7 +273,8 @@
 .phone-wrap .prefix {
   display: flex;
   align-items: center;
-  padding: 0 13px;
+  gap: 7px;
+  padding: 0 12px;
   font-size: 13px;
   font-weight: 700;
   color: var(--ink);
@@ -270,28 +287,44 @@
   border-radius: 0 9px 9px 0;
 }
 
+/* password strength line */
+.strength {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: -4px 0 16px;
+}
+.strength-track {
+  flex: 1;
+  height: 4px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.strength-fill {
+  display: block;
+  height: 100%;
+  background: var(--gold);
+  border-radius: 999px;
+  transition:
+    width 0.2s ease,
+    background 0.2s ease;
+}
+.strength-fill.is-met {
+  background: var(--green);
+}
+.strength small {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
 .char-meter {
   display: flex;
   align-items: center;
   gap: 8px;
   margin: -6px 0 16px;
-}
-.meter-dots {
-  display: inline-flex;
-  gap: 3px;
-}
-.meter-dots i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--line);
-  transition: background 0.18s ease;
-}
-.meter-dots i.on {
-  background: var(--gold);
-}
-.meter-dots.is-met i.on {
-  background: var(--green);
 }
 .char-meter small {
   font-size: 10.5px;
@@ -405,7 +438,13 @@
   .signup-card {
     padding: 24px 20px;
   }
-  .signup-side h1 {
+.signup-side .badge.gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.signup-side h1 {
     font-size: 27px;
   }
   .signup-card h2 {

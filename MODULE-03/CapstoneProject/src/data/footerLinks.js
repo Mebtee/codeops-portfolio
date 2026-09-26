@@ -2,10 +2,10 @@
 export const BRAND_NAME = 'Mesob House';
 export const PHONE = '+251 911 234 567';
 export const PHONE_HREF = 'tel:+251911234567';
-export const ADDRESS = 'Bole Medhanealem, Addis Ababa';
+export const ADDRESS = 'Bole Medhanialem, Addis Ababa';
 export const HOURS = [
   'Tuesday – Sunday: 11:30 AM – 11:00 PM',
-  'Monday: Reserved for Private Events',
+  'Monday: Reserved for private banquets',
 ];
 
 export const FOOTER_BRAND = {
@@ -23,7 +23,7 @@ export const FOOTER_COLUMNS = [
     title: 'Hospitality Hours',
     items: [
       { text: 'Tuesday – Sunday: 11:30 AM – 11:00 PM' },
-      { text: 'Monday: Reserved for Private Events' },
+      { text: 'Monday: Reserved for private banquets' },
       { text: 'Jebena Buna & Fresh Roasting All Evening', highlight: true },
     ],
   },

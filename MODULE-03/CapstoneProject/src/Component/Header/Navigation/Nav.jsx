@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const LINKS = [
   { to: '/menu', label: 'Menu' },
-  { to: '/future', label: 'Featured Dishes' },
+  { to: '/future', label: 'Featured Dish' },
   { to: '/orderCart', label: 'Order & Cart' },
   { to: '/delivery', label: 'Delivery & Checkout' },
 ];
