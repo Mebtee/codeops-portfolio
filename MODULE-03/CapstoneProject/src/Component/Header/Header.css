@@ -43,7 +43,7 @@
 .header-brand-text b {
   font-family: var(--serif);
   font-size: 21px;
-  color: var(--ink);
+  color: var(--red);
   letter-spacing: 0.2px;
 }
 .header-brand-text small {
