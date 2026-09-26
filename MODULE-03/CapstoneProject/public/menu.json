@@ -173,7 +173,7 @@
       "category": "Tibs & Grills",
       "priceETB": 560,
       "spiceLevel": "Zesty Lemon & Chili (1/3)",
-      "isFasting": true,
+      "isFasting": false,
       "isSpecial": false,
       "description": "Fresh golden pan-crisped freshwater tilapia chunks dusted with korarima and served with spicy mitmita salt and lime.",
       "ingredients": [
@@ -351,10 +351,14 @@
       "category": "Beverages & Tej",
       "priceETB": 350,
       "spiceLevel": "Pure Sweet Ferment",
-      "isFasting": true,
+      "isFasting": false,
       "isSpecial": true,
       "description": "Traditional golden mead naturally fermented for 21 days with pure highland wildflower honey and bitter gesho wood.",
-      "ingredients": ["Pure Wild Honey", "Gesho Wood", "Spring Water"],
+      "ingredients": [
+        "Pure Wild Honey",
+        "Gesho Wood",
+        "Spring Water"
+      ],
       "servings": "500ml Flask (11% ABV)"
     },
     {
