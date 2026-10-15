@@ -22,6 +22,7 @@ export default function OrderStatus({ initialOrder }) {
     fetcher,
     {
       fallbackData: initialOrder,
+      revalidateOnMount: true,
       refreshInterval: 5000,
       refreshWhenHidden: false,
       revalidateOnFocus: false,
