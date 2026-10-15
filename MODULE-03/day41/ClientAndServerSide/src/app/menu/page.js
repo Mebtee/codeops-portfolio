@@ -1,6 +1,6 @@
-import { getDishes } from "@/data/dishes";
-import CategoryBar from "./CategoryBar";
+import { queryDishes } from "@/data/dishes";
 import DishList from "@/components/DishList";
+import SearchBox from "./SearchBox";
 
 export const revalidate = 3600;
 
@@ -9,13 +9,13 @@ export const metadata = {
 };
 
 export default async function MenuPage() {
-  const dishes = await getDishes();
+  const initial = await queryDishes({ page: 1 });
 
   return (
     <section>
-      <CategoryBar>
-        <DishList dishes={dishes} />
-      </CategoryBar>
+      <SearchBox initial={initial}>
+        <DishList dishes={initial.data} />
+      </SearchBox>
     </section>
   );
 }

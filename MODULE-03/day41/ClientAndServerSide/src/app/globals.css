@@ -640,3 +640,59 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+/* Day 41 — live menu search + paging */
+.menu-tools {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.menu-search {
+  flex: 1 1 260px;
+  max-width: 420px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--text);
+  font: inherit;
+}
+
+.menu-search:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.menu-count {
+  font-size: 13px;
+}
+
+.menu-pager {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.menu-pager button {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: inherit;
+  padding: 7px 14px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.menu-pager button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.menu-pager .page-of {
+  font-size: 13px;
+}

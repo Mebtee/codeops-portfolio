@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { fmt } from "@/data/dishes";
+import { fmt } from "@/lib/format";
 import AddToCartButton from "@/components/AddToCartButton";
 
 export default function DishList({ dishes }) {

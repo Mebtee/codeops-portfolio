@@ -79,8 +79,7 @@ export function slugify(value) {
     .replace(/(^-|-$)/g, "");
 }
 
-export const fmt = (value) =>
-  "ETB " + Number(value || 0).toLocaleString("en-US");
+export { fmt } from "@/lib/format";
 
 export async function getDishes() {
   await wait(DELAY_MS);
