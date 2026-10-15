@@ -14,10 +14,11 @@ Three rules drive everything:
 
 ## The directive inventory
 
-`grep -rn '"use client"' src/` returns **6** files:
+`grep -rn '"use client"' src/` returns **7** files:
 
 ```
-src/app/menu/CategoryBar.jsx     client shell — renders server children
+src/app/menu/SearchBox.jsx       live menu shell (Day 41): debounced SWR list + pager
+src/app/orders/[id]/OrderStatus.jsx  the 5 s poll over server-seeded data (Day 41)
 src/app/providers.jsx            the cart provider
 src/app/checkout/CheckoutForm.jsx the checkout form + server action call
 src/components/AddToCartButton   the "+ Add" button
@@ -25,16 +26,21 @@ src/components/CartBadge         the header cart counter
 src/components/CartList          the cart table
 ```
 
-Every one of them is a leaf that owns a click handler or a piece of state.
-Nothing above a leaf is marked: no page, no layout, no `DishList`, no data
-module.
+Every one of them is a leaf that owns a click handler, a piece of state, or a
+query. Nothing above a leaf is marked: no page (including `/orders/[id]`, which
+stays a server component), no layout, no `DishList`, no data module.
 
+> Day 38's `CategoryBar` (the brief's FilterShell) is gone: Day 41's `SearchBox`
+> replaced a shell that rendered server `children` and owned nothing with a
+> shell that renders server `children` **and** owns the live query. The seam is
+> the same idea; it now has a job, so it is one file instead of two.
+>
 > The brief's tip: *"on a well-sorted application of this size you should find
-> three or four"* — this one lands on **6**, because the cart has three
-> genuinely independent interactive leaves (badge, add button, cart table) plus
-> the checkout form, on top of the two the brief names (provider, category
-> bar). Merging them into a single file would only hide the boundary, not move
-> it.
+> three or four"* — this one lands on **7**, because the cart has three
+> genuinely independent interactive leaves (badge, add button, cart table), the
+> checkout form is a fourth, and Day 41 adds two more genuinely independent
+> ones: the menu list and the order poll. Merging them into a single file would
+> only hide the boundary, not move it.
 
 ### The server action boundary
 
@@ -55,10 +61,12 @@ back to the server.
   and refuses to write unless they match — the ownership check cannot be
   bypassed from the console because the client never sees another session's id.
 
-`app/menu/CategoryBar.jsx` is the **only client component in the menu
+`app/menu/SearchBox.jsx` is the **only client component in the menu
 segment** — the error boundary was removed from that segment for exactly this
 reason (`/menu` is prerendered and fails loudly at build time; Next's default
-global error page covers runtime faults).
+global error page covers runtime faults). `app/orders/[id]/OrderStatus.jsx` is
+likewise the only client component in the order segment; both pages above them
+stay server components.
 
 ## Component table
 
@@ -72,9 +80,9 @@ global error page covers runtime faults).
 | `Footer`          | `src/components/Footer.jsx` | Server                     | no             | Static text.                                                                                                                               |
 | `CartBadge`       | `src/components/CartBadge.jsx` | **Client**              | **yes**        | Reads `count` from context — state can only be read in the browser. The smallest leaf the header needs.                                     |
 | `MenuLayout`      | `src/app/menu/layout.jsx`   | Server                     | no             | Just segment metadata — renders `children` bare. The old category sidebar was removed by request, so the list is now full-width.               |
-| `MenuPage`        | `src/app/menu/page.js`      | **Server, async**          | no             | `await getDishes()` + `revalidate = 3600`. No hooks, no `loading`/`error` state, no fetch in the component — this is the whole point.         |
-| `DishList`        | `src/components/DishList.jsx` | **Server**               | **no**         | Pure markup from data — 20 minimal cards (dish name, price, add button) carrying `data-category`/`data-name` attributes. `grep -rl "Classic Doro Wat" .next/static/chunks/` finds **nothing** in the client bundle. |
-| `CategoryBar`     | `src/app/menu/CategoryBar.jsx` | **Client**             | **yes**        | The brief's FilterShell. After the UI-stripping pass it renders only `children` — a client seam with no markup of its own; it never imports `DishList`. |
+| `MenuPage`        | `src/app/menu/page.js`      | **Server, async**          | no             | `await queryDishes({ page: 1 })` + `revalidate = 3600`. Passes the first page to `SearchBox` as `fallbackData` **and** as a server `DishList` slot. Still no hooks, no `loading`/`error` state, no fetch of its own.         |
+| `DishList`        | `src/components/DishList.jsx` | **Server, and client-by-inheritance** | **no**         | Pure markup from a `dishes` prop — one card each (name, price, add button) with `data-category`/`data-name`. Rendered by the server as `SearchBox`'s default slot **and** imported by the client `SearchBox` for query results; it never carries the directive, so the seed stays server markup and only the search path ships it. |
+| `SearchBox`       | `src/app/menu/SearchBox.jsx` | **Client**             | **yes**        | Day 41's live seam (replaces the old `CategoryBar`). Debounces the term (400 ms), pages via `?page=` (`replaceState`), and switches **one** SWR key between `null` (empty term → render the server `children`) and `/api/dishes?q=…&page=…`. Owns the field, the pager and the result list. |
 | `AddToCartButton` | `src/components/AddToCartButton.jsx` | **Client**         | **yes**        | Click handler + transient "Added" state. Rendered *inside* server `DishList` — legal, and the seam the App Router expects.                   |
 | `MenuLoading`     | `src/app/menu/loading.js`   | Server                     | no             | A streaming fallback is markup only.                                                                                                       |
 | `MenuSlugPage`    | `src/app/menu/[id]/page.jsx`| **Server, async**          | no             | `await params`, `generateStaticParams()`, `notFound()`. Category pages reuse server `DishList`.                                             |
@@ -82,11 +90,15 @@ global error page covers runtime faults).
 | `CartList`        | `src/components/CartList.jsx` | **Client**               | **yes**        | Reads and mutates cart state (quantity, remove, clear). An empty cart renders `null` — no placeholder text on screen.                           |
 | `CheckoutPage`    | `src/app/checkout/page.jsx` | **Server, dynamic**        | no             | `await cookies()` — a request-time API, not a client fetch. Kept `force-dynamic` even though the page renders no visible text (blank by request). |
 | `CheckoutForm`    | `src/app/checkout/CheckoutForm.jsx` | **Client**         | **yes**        | Calls the `placeOrder` server action via `useActionState`; owns the pending flag and renders the returned `fieldErrors`. The submission has no `fetch`. |
+| `OrderStatusPage` | `src/app/orders/[id]/page.js` | **Server, async**        | no             | `await params`, `await getOrder(id)`, `notFound()`. Renders the order into the HTML, then hands it to the client `OrderStatus` as `fallbackData` — the seed the poll updates. |
+| `OrderStatus`     | `src/app/orders/[id]/OrderStatus.jsx` | **Client**       | **yes**        | The only client component in the order segment. One `useSWR(url, fetcher, { fallbackData, refreshInterval: 5000, … })` — no manual `setInterval`, no `useEffect`, no spinner on first paint. |
+| `fetcher`         | `src/lib/fetcher.js`        | **Client** (shared)        | no             | The one `useSWR` fetcher: `res.ok` or throw. Imported by the two client queries; carries no directive because it is only ever reached from client entries. |
+| `format.js`       | `src/lib/format.js`         | **Shared**                 | no             | `fmt` for prices. Extracted from `data/dishes.js` on Day 41 so the client `SearchBox`→`DishList` path formats prices without pulling in `node:fs`. |
 | `schema.js`       | `src/lib/schema.js`         | **Shared**                 | no             | The one zod schema. Imported by the client form-adjacent code, the `POST /api/orders` route, and `placeOrder` — a single source of truth for what a valid order is. |
 | `actions.js`      | `src/actions.js`            | **Server only** (`"use server"`) | no      | `placeOrder` + `cancelOrder`. Writes orders, sets the session, revalidates, and enforces ownership. |
 | `orders.js`       | `src/lib/orders.js`         | **Server only**            | no             | `node:fs`-backed order store (`data/orders.json`). Never imported by a client component. |
 | `session.js`      | `src/lib/session.js`        | **Server only**            | no             | Reads/sets the `addis_eats_session` cookie. |
-| `dishes.js`       | `src/data/dishes.js`        | **Server only**            | no             | Uses `node:fs` to read `public/menu.json`. Never imported by a client component, so it stays out of the bundle entirely.                     |
+| `dishes.js`       | `src/data/dishes.js`        | **Server only**            | no             | Uses `node:fs` to read `public/menu.json`; exports `queryDishes`/`PAGE_SIZE` and re-exports `fmt`. Never imported by a client component, so it stays out of the bundle entirely — the client formatting path goes through `lib/format.js` instead.                     |
 
 ## The boundary techniques
 
@@ -94,20 +106,38 @@ global error page covers runtime faults).
 
 ```jsx
 // src/app/menu/page.js  (server)
-<CategoryBar>
-  <DishList dishes={dishes} />   {/* server element, serialized as a slot */}
-</CategoryBar>
+<SearchBox initial={initial}>
+  <DishList dishes={initial.data} />   {/* server element, serialized as a slot */}
+</SearchBox>
 ```
 
-`CategoryBar` is the client **FilterShell** described in the brief. After the
-UI-stripping pass (no heading, no chips, no search — per request) it renders
-only its `children`, which is the minimal job a client shell should have:
-mark the seam, own nothing. It never imports `DishList`. The dish markup is
-still produced on the server and handed over inside the RSC payload as a
-slot; the client bundle holds the shell and the leaf buttons — nothing about
-how a dish is drawn.
+`SearchBox` is the client shell at the menu seam. On Day 41 it grew a job — it
+owns the debounced query and the pager — but it still does **not** import
+`DishList` for its default view: while the search box is empty the SWR key is
+`null`, so React renders the `children` it was handed, and the dish markup
+stays server-produced inside the RSC payload. Only when a term is committed
+does `SearchBox` render `DishList` itself (now as a client-by-inheritance
+component) to draw query results. So the bundle holds the shell, the field and
+the leaf buttons for the *search* path; the *default* grid is still pure server
+markup with no client cost.
 
-### 2. Client context crossing server components
+### 2. Server data as the query's `fallbackData`
+
+```jsx
+// src/app/orders/[id]/page.js  (server)  →  OrderStatus.jsx  (client)
+const order = await getOrder(id);
+notFound() if (!order);
+<OrderStatus initialOrder={order} />   // client: useSWR(url, fetcher, { fallbackData: initialOrder })
+```
+
+The order status screen is the cleanest boundary example in the app: the server
+renders the **complete** order (reference, items, total, status badge) into the
+HTML, and the client component receives that same object as `fallbackData`.
+SWR therefore has data on the very first client render — no request, no
+spinner — and its first job is only to *refresh* what is already on screen every
+5 seconds. The client owns the poll; the server owned the first paint.
+
+### 3. Client context crossing server components
 
 ```
 <Providers>            client
@@ -120,6 +150,12 @@ is rendered *between* the provider and the consumer, which does not break the
 context — only the client leaf calls `useCart()`.
 
 ## Before / after: First Load JS on `/menu`
+
+> This is the **Day 38** boundary experiment, kept because it is the clearest
+> proof that the server/client split itself moves the number. It predates Day
+> 41, so the `CategoryBar` shell it mentions no longer exists (replaced by
+> `SearchBox`) and its `/menu` "after" is not the current build — the Day 41
+> delta is in its own subsection below.
 
 **Method.** The "before" variant is the capstone's own approach applied to
 this app: `menu/page.js` became a `"use client"` component that `fetch`es
@@ -171,19 +207,45 @@ npm run build && npm run measure -- menu after    # shipped version
   React would have had to render anyway, and in the before build the same
   content never arrives until step four.
 
-### Per-route First Load JS (after, shipped build)
+### Day 41 delta — what the live-data seam cost on `/menu`
+
+The before/after above is the Day 38 boundary experiment and still holds: the
+menu is a server component. Day 41 added a client query *to that server page*,
+so the honest question is what SWR cost. Measured the same way (`npm run
+measure -- menu day41`):
+
+| Metric                          | Day 38 (server menu) | Day 41 (+ SWR search/pager) | Delta |
+| ------------------------------- | -------------------: | --------------------------: | ----: |
+| External scripts on `/menu`     |      8 · **563.3 KB** |            9 · **578.6 KB** | **+1 script · +15.3 KB** |
+| … same, gzipped                 |            173.4 KB |                  179.9 KB | +6.5 KB |
+| Inline RSC payload              |             29.0 KB |                     15.0 KB | **−14.0 KB** |
+| `menu.html` document            | 37,893 B (6,889 gz) |       19,720 B (4,355 gz) | −18,173 B |
+| Dishes shipped in the HTML      |             20 / 20 |            6 / 20 (page 1) | paged |
+| Requests on the **default** view |                   0 |                           0 | **0** |
+
+Read it this way: the +15.3 KB is the SWR runtime chunk, paid **once** on the
+menu route — the per-route table below shows every other page is byte-identical,
+so SWR is not in their bundles. In exchange, the page pays **less** on the wire
+(−14 KB of inline RSC, a document less than half the size) because page 1 (6
+dishes) ships instead of all 20, and the default view still issues **zero**
+requests: the empty search box means a `null` SWR key, so the server seed is
+shown untouched until the visitor actually types or pages (see `DATA.md`).
+
+### Per-route First Load JS (Day 41 shipped build)
 
 | Route               | Scripts | Raw     | Gzip   | Inline RSC | HTML shell  |
 | ------------------- | ------: | ------: | -----: | ---------: | ----------- |
 | `/`                 |       7 | 562.7 KB | 173.0 KB |     5.4 KB | prerendered |
-| `/menu`             |       8 | 563.3 KB | 173.4 KB |    29.0 KB | 37,893 B    |
+| `/menu`             |       9 | 578.6 KB | 179.9 KB |    15.0 KB | 19,720 B    |
 | `/menu/doro-wat`    |       8 | 563.2 KB | 173.3 KB |     9.4 KB | prerendered |
 | `/menu/wat`         |       8 | 563.2 KB | 173.3 KB |    14.0 KB | prerendered |
 | `/cart`             |       8 | 564.3 KB | 173.6 KB |     5.6 KB | prerendered |
 | `/checkout`         |       — |       — |       — |          — | **dynamic: no HTML shell (by design)** |
+| `/orders/[id]`      |       — |       — |       — |          — | **dynamic: no HTML shell (seeded server-side at request time)** |
 
 ```bash
-npm run measure                 # /menu, label "after"
-npm run measure -- cart         # any prerendered route
-npm run measure -- checkout     # exits: dynamic routes are not prerendered
+npm run measure                  # /menu, label "after"
+npm run measure -- menu day41    # the Day 41 build
+npm run measure -- cart          # any prerendered route
+npm run measure -- checkout      # exits: dynamic routes are not prerendered
 ```
