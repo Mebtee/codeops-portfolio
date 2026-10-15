@@ -29,9 +29,14 @@ export default function CheckoutForm() {
         <p className="confirm-copy">
           We will call +251 {state.order.phone} to confirm delivery.
         </p>
-        <Link href="/menu" className="cta">
-          Explore the menu
-        </Link>
+        <div className="cta-row" style={{ justifyContent: "center" }}>
+          <Link href={`/orders/${state.order.id}`} className="cta">
+            Track this order
+          </Link>
+          <Link href="/menu" className="cta secondary">
+            Explore the menu
+          </Link>
+        </div>
       </div>
     );
   }

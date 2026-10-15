@@ -504,3 +504,139 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+/* Day 41 — live order status screen */
+.order-status {
+  margin-top: 10px;
+}
+
+.status-card {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.status-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.status-head h1 {
+  margin: 0;
+  font-size: 26px;
+  letter-spacing: 0.5px;
+}
+
+.status-badge {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.status-badge[data-status="cancelled"] {
+  text-decoration: line-through;
+}
+
+.status-sync {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 0;
+  font-size: 13px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.live-dot[data-live="yes"] {
+  animation: live-pulse 1s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.status-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 0;
+}
+
+.status-steps li {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 13px;
+  font-size: 13px;
+  opacity: 0.45;
+}
+
+.status-steps li[data-state="done"] {
+  opacity: 1;
+}
+
+.status-steps li[data-state="current"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #12100e;
+  opacity: 1;
+  font-weight: 700;
+}
+
+.status-section {
+  margin-top: 22px;
+}
+
+.status-section h2 {
+  margin: 0 0 8px;
+  font-size: 17px;
+}
+
+.status-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 22px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.status-facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.status-facts dt {
+  font-weight: 600;
+}
+
+.status-facts dd {
+  margin: 0;
+  text-align: right;
+}
+
+.order-status .cta-row {
+  align-items: center;
+}
+
+@media (max-width: 780px) {
+  .status-facts {
+    grid-template-columns: 1fr;
+  }
+}
