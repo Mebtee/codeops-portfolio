@@ -14,11 +14,12 @@ Three rules drive everything:
 
 ## The directive inventory
 
-`grep -rn '"use client"' src/` returns **5** files:
+`grep -rn '"use client"' src/` returns **6** files:
 
 ```
 src/app/menu/CategoryBar.jsx     client shell — renders server children
 src/app/providers.jsx            the cart provider
+src/app/checkout/CheckoutForm.jsx the checkout form + server action call
 src/components/AddToCartButton   the "+ Add" button
 src/components/CartBadge         the header cart counter
 src/components/CartList          the cart table
@@ -29,10 +30,30 @@ Nothing above a leaf is marked: no page, no layout, no `DishList`, no data
 module.
 
 > The brief's tip: *"on a well-sorted application of this size you should find
-> three or four"* — this one lands on **5**, because the cart has three
-> genuinely independent interactive leaves (badge, add button, cart table) on
-> top of the two the brief names (provider, category bar). Merging them into a
-> single file would only hide the boundary, not move it.
+> three or four"* — this one lands on **6**, because the cart has three
+> genuinely independent interactive leaves (badge, add button, cart table) plus
+> the checkout form, on top of the two the brief names (provider, category
+> bar). Merging them into a single file would only hide the boundary, not move
+> it.
+
+### The server action boundary
+
+`src/actions.js` opens with `"use server"`, so **every** export in it is a
+server-only function, even though a client component imports and calls
+`placeOrder`. The client bundle never contains the schema, the session helper,
+or the file-backed order store — it only contains a reference the browser POSTs
+back to the server.
+
+- `CheckoutForm` (client) imports `placeOrder` and calls it through
+  `useActionState`, which is where the pending flag and the returned
+  `fieldErrors` come from.
+- `placeOrder` and `cancelOrder` are the only code that touches
+  `lib/session.js` (`cookies()`) and `lib/orders.js` (`node:fs`). Because they
+  run on the server, neither `node:fs` nor the cookie jar reaches the browser:
+  `grep -rl "orders.json" .next/static/chunks/` finds nothing.
+- `cancelOrder` re-derives the session and the record's owner **on the server**
+  and refuses to write unless they match — the ownership check cannot be
+  bypassed from the console because the client never sees another session's id.
 
 `app/menu/CategoryBar.jsx` is the **only client component in the menu
 segment** — the error boundary was removed from that segment for exactly this
@@ -60,6 +81,11 @@ global error page covers runtime faults).
 | `CartPage`        | `src/app/cart/page.jsx`     | Server                     | no             | Server done intentionally: it holds no copy — the client `CartList` is the only child, and it renders nothing until the cart has items.          |
 | `CartList`        | `src/components/CartList.jsx` | **Client**               | **yes**        | Reads and mutates cart state (quantity, remove, clear). An empty cart renders `null` — no placeholder text on screen.                           |
 | `CheckoutPage`    | `src/app/checkout/page.jsx` | **Server, dynamic**        | no             | `await cookies()` — a request-time API, not a client fetch. Kept `force-dynamic` even though the page renders no visible text (blank by request). |
+| `CheckoutForm`    | `src/app/checkout/CheckoutForm.jsx` | **Client**         | **yes**        | Calls the `placeOrder` server action via `useActionState`; owns the pending flag and renders the returned `fieldErrors`. The submission has no `fetch`. |
+| `schema.js`       | `src/lib/schema.js`         | **Shared**                 | no             | The one zod schema. Imported by the client form-adjacent code, the `POST /api/orders` route, and `placeOrder` — a single source of truth for what a valid order is. |
+| `actions.js`      | `src/actions.js`            | **Server only** (`"use server"`) | no      | `placeOrder` + `cancelOrder`. Writes orders, sets the session, revalidates, and enforces ownership. |
+| `orders.js`       | `src/lib/orders.js`         | **Server only**            | no             | `node:fs`-backed order store (`data/orders.json`). Never imported by a client component. |
+| `session.js`      | `src/lib/session.js`        | **Server only**            | no             | Reads/sets the `addis_eats_session` cookie. |
 | `dishes.js`       | `src/data/dishes.js`        | **Server only**            | no             | Uses `node:fs` to read `public/menu.json`. Never imported by a client component, so it stays out of the bundle entirely.                     |
 
 ## The boundary techniques

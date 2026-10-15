@@ -1,0 +1,129 @@
+.cart-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cart-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background-color: #f6e5de;
+  border-radius: 12px;
+}
+.cart-container a {
+  text-decoration: none;
+}
+
+.cart-inner-holder {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background-color: #184530;
+  color: #ffffff;
+}
+.count p {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.count p + p {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.total {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 14px;
+  color: #7e5700;
+  white-space: nowrap;
+}
+
+.account-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 10px;
+  border-left: 1px solid var(--line);
+}
+.account-container a,
+.account-container .link-btn {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+}
+.account-container a:hover,
+.account-container .link-btn:hover {
+  color: var(--red);
+  text-decoration: underline;
+}
+.account-container .register-btn {
+  padding: 8px 16px;
+  color: #fff;
+  background: var(--red);
+  border-radius: 999px;
+  font-weight: 700;
+  transition: background 0.18s ease;
+}
+.account-container .register-btn:hover {
+  color: #fff;
+  background: var(--red-dark);
+  text-decoration: none;
+}
+.account-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Below the nav breakpoint the collapsed menu carries Sign In / Register,
+   so the inline account links are redundant and cost ~120px of width. */
+@media (max-width: 1180px) {
+  .account-container {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-form {
+    gap: 0;
+  }
+  .cart-container {
+    padding: 5px 8px;
+  }
+  .count {
+    min-width: 38px;
+    padding: 2px 8px;
+  }
+  .count p {
+    font-size: 13px;
+  }
+  .total {
+    font-size: 12.5px;
+  }
+}

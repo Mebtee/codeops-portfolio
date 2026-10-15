@@ -57,18 +57,55 @@ Build output confirms the strategies:
 Route (app)                 Revalidate  Expire
 ┌ ○ /
 ├ ○ /_not-found
+├ ƒ /api/dishes
+├ ƒ /api/dishes/[id]
+├ ƒ /api/orders
 ├ ○ /cart
 ├ ƒ /checkout
 ├ ○ /menu                           1h      1y
 └   /menu/[id]
   ├ ● /menu/doro-wat
   ├ ● /menu/siga-wat
+  ├ ● /menu/beg-alicha-wat
   └ ● [+23 more paths]
 
-○  (Static)  prerendered as static content
-●  (SSG)     prerendered as static HTML (uses generateStaticParams)
-ƒ  (Dynamic) server-rendered on demand
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
 ```
+
+## API routes and server actions
+
+Addis Eats now ships its own backend. The routes below all read the same
+`src/data/dishes.js` module and the same `src/lib/schema.js` zod schema the form
+uses, so a request that is valid in the browser is valid at the edge of the
+server, and vice versa.
+
+| Endpoint / action | File | Strategy | Behaviour |
+| ----------------- | ---- | -------- | --------- |
+| `GET /api/dishes` | `app/api/dishes/route.js` | Dynamic (ƒ) | Awaits `getDishes()` (the 800 ms simulated API) and returns `{ data: dishes }`. |
+| `GET /api/dishes/[id]` | `app/api/dishes/[id]/route.js` | Dynamic (ƒ) | Looks up by slug **or** id; unknown id → `404 { error: "Dish not found" }`. |
+| `POST /api/orders` | `app/api/orders/route.js` | Dynamic (ƒ) | `orderSchema.safeParse(body)`; failure → `422 { error, fieldErrors }`; success → `201 { data: order }`; malformed JSON → `400`. Also `GET /api/orders` returns only the caller's orders (`401` without a session). |
+| `placeOrder` | `src/actions.js` (`"use server"`) | Server action | Same schema + same store as the route; sets the session cookie, writes the order, then `revalidatePath("/checkout")` and `revalidatePath("/cart")`. |
+| `cancelOrder` | `src/actions.js` (`"use server"`) | Server action | Reads the session, loads the record, and **checks ownership before writing** — `401` no session, `404` no record, `403` not the owner. |
+
+`/checkout` is the one page that submits through the action rather than the
+route: the task was to build the endpoint, prove it with `curl`, then rewrite the
+same submission as a server action and delete the client `fetch` — which is what
+shipped. The endpoint stays as the documented, curl-testable contract, and the
+action is the path the UI actually takes.
+
+### Status codes used
+
+| Code | When |
+| ---- | ---- |
+| 200 | `GET` routes succeed |
+| 201 | an order is created |
+| 400 | request body is not valid JSON |
+| 401 | `GET /api/orders` or `cancelOrder` with no session cookie |
+| 403 | `cancelOrder` on an order owned by a different session |
+| 404 | unknown dish id, or `cancelOrder` on a missing order |
+| 422 | zod validation failed — body carries `fieldErrors` keyed by field |
 
 ## Why category pages use path segments, not query params
 
