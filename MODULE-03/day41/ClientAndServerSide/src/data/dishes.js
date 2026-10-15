@@ -87,6 +87,34 @@ export async function getDishes() {
   return DISHES;
 }
 
+export const PAGE_SIZE = 6;
+
+export async function queryDishes({ q = "", page = 1, pageSize = PAGE_SIZE } = {}) {
+  const dishes = await getDishes();
+  const needle = String(q).trim().toLowerCase();
+  const matched = needle
+    ? dishes.filter((dish) =>
+        [dish.name, dish.nameAm, dish.desc, dish.catLabel]
+          .join(" ")
+          .toLowerCase()
+          .includes(needle)
+      )
+    : dishes;
+
+  const total = matched.length;
+  const size = Math.max(1, Number(pageSize) || PAGE_SIZE);
+  const totalPages = Math.max(1, Math.ceil(total / size));
+  const safePage = Math.min(Math.max(1, Number(page) || 1), totalPages);
+
+  return {
+    data: matched.slice((safePage - 1) * size, safePage * size),
+    page: safePage,
+    pageSize: size,
+    total,
+    totalPages,
+  };
+}
+
 export async function getDishesByCategory(key) {
   const dishes = await getDishes();
   if (key === "all") return dishes;
