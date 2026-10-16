@@ -99,3 +99,32 @@ export async function cancelOrder(orderId) {
   revalidatePath("/cart");
   return { status: 200, ok: true, order: updated };
 }
+
+const ORDER_STAGES = ["pending", "preparing", "on the way", "delivered"];
+
+export async function advanceOrder(orderId, _formData) {
+  const session = await getSession();
+  if (!session) {
+    return { status: 401, ok: false, error: "No active session." };
+  }
+  if (session.user.role !== "staff") {
+    return { status: 403, ok: false, error: "Staff only." };
+  }
+
+  const order = getOrder(orderId);
+  if (!order) {
+    return { status: 404, ok: false, error: "Order not found." };
+  }
+  if (order.status === "cancelled") {
+    return { status: 409, ok: false, error: "Cancelled orders cannot advance." };
+  }
+
+  const index = ORDER_STAGES.indexOf(order.status);
+  if (index === -1 || index === ORDER_STAGES.length - 1) {
+    return { status: 200, ok: true, order };
+  }
+
+  const updated = updateOrder(orderId, { status: ORDER_STAGES[index + 1] });
+  revalidatePath("/kitchen");
+  return { status: 200, ok: true, order: updated };
+}

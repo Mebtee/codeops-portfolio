@@ -19,6 +19,11 @@ export default function AccountMenu() {
 
   return (
     <span className="account-menu">
+      {user.role === "staff" && (
+        <Link href="/kitchen" className="account-link">
+          Kitchen
+        </Link>
+      )}
       <span className="account-name" title={user.email}>
         {user.name}
       </span>
