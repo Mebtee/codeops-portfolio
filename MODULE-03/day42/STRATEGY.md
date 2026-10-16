@@ -61,8 +61,11 @@ grep -rl "Classic Doro Wat" .next/static/chunks/    # → none
 | `/menu/[id]`       | `src/app/menu/[id]/page.jsx`  | **SSG** — 26 pages at build | `generateStaticParams()` + `dynamicParams = false` | 20 dish slugs + 6 category slugs = 26 static pages. Unknown slugs never reach the server: Next serves 404 (`/menu/pizza` → 404). No `revalidate`, so they are frozen at build time. |
 | `/menu` layout     | `src/app/menu/layout.jsx`     | Static                      | no dynamic APIs                            | Only segment metadata now — the old category sidebar was removed by request, so `children` render full-width.                                 |
 | `/cart`            | `src/app/cart/page.jsx`       | Static shell + client subtree | none                                       | The page holds no copy at all; cart contents live in browser memory (`CartContext`) and the client `CartList` renders only when the cart has items. |
-| `/checkout`        | `src/app/checkout/page.jsx`   | **Forced dynamic**          | `export const dynamic = "force-dynamic"` + `await cookies()` | Reads `addis_eats_session` per request. `cookies()` is a dynamic API and `force-dynamic` makes the intent explicit.                           |
-| `/orders/[id]`     | `src/app/orders/[id]/page.js` | **Forced dynamic**          | `export const dynamic = "force-dynamic"` | `await params`, `getOrder(id)`, `notFound()` when the id is unknown. Renders the whole order into the HTML, then hands it to the client `OrderStatus` as `fallbackData` — no spinner on first paint, then a 5 s poll against `GET /api/orders/[id]`. |
+| `/checkout`        | `src/app/checkout/page.jsx`   | **Forced dynamic**          | `export const dynamic = "force-dynamic"` + `await getSession()` | Reads the session per request. `cookies()` is a dynamic API and `force-dynamic` makes the intent explicit. |
+| `/orders`          | `src/app/orders/page.jsx`     | **Forced dynamic**          | `export const dynamic = "force-dynamic"` + `await getSession()` | The account's own receipts. `getSession()`, then `listOrders().filter((o) => o.sessionId === user.id)` — the query is scoped to the signed-in user id, so another account's rows are never loaded, let alone rendered. |
+| `/orders/[id]`     | `src/app/orders/[id]/page.js` | **Forced dynamic**          | `export const dynamic = "force-dynamic"` + `await getSession()` | `await params`, `getSession()`, then `getOrder(id)` **and** an `order.sessionId === user.id` check — an unknown id *or* someone else's id both `notFound()`. Renders the whole order into the HTML, then hands it to the client `OrderStatus` as `fallbackData` — no spinner on first paint, then a 5 s poll against `GET /api/orders/[id]`. |
+| `/kitchen`         | `src/app/kitchen/page.jsx`    | **Forced dynamic**          | `export const dynamic = "force-dynamic"` + `notFound()` for non-staff | The staff-only board. `getSession()`; `notFound()` unless `session.user.role === "staff"`, so the route does not exist for a customer. Lists every account's orders with an **Advance** button (`advanceOrder`). |
+| `/signin`          | `src/app/signin/page.js`      | **Forced dynamic**          | `export const dynamic = "force-dynamic"` + `searchParams` + `await getSession()` | Reads `?next=`, runs `safeNextPath`, and decides whether to render the "you'll return to X" note; redirects to `target` if a session already exists. Reading `searchParams` and the cookie are both dynamic APIs. |
 
 Build output confirms the strategies:
 
@@ -74,20 +77,31 @@ Route (app)                 Revalidate  Expire
 ├ ƒ /api/dishes/[id]
 ├ ƒ /api/orders
 ├ ƒ /api/orders/[id]
+├ ƒ /api/session
 ├ ○ /cart
 ├ ƒ /checkout
+├ ƒ /kitchen
 ├ ○ /menu                           1h      1y
 ├   /menu/[id]
-│ ├ ● /menu/doro-wat
-│ ├ ● /menu/siga-wat
-│ ├ ● /menu/beg-alicha-wat
-│ └ ● [+23 more paths]
-└ ƒ /orders/[id]
+├ ƒ /orders
+├ ƒ /orders/[id]
+└ ƒ /signin
+
+ƒ Proxy (Middleware)
 
 ○  (Static)   prerendered as static content
 ●  (SSG)      prerendered as static HTML (uses generateStaticParams)
 ƒ  (Dynamic)  server-rendered on demand
 ```
+
+**Day 42 did not move a single static or ISR route.** `/`, `/cart` and `/menu`
+(1 h / 1 y) are still `○`, and `/menu/[id]` is still `●` — because the session
+is deliberately *not* read in the root layout or header. Rather than
+`cookies()` in `Header` (which would opt **every** route out of static
+generation), the header mounts one client leaf, `AccountMenu`, that asks
+`GET /api/session` who the visitor is. The `ƒ Proxy (Middleware)` line is the
+new private-route guard; it applies to `/checkout`, `/orders/*` and `/kitchen`
+only.
 
 ## API routes and server actions
 
@@ -100,10 +114,14 @@ server, and vice versa.
 | ----------------- | ---- | -------- | --------- |
 | `GET /api/dishes` | `app/api/dishes/route.js` | Dynamic (ƒ) | Bare request: awaits `getDishes()` (the 800 ms simulated API) and returns `{ data: dishes }` — all 20, the days 38–40 contract. With `?q=`, `?page=` or `?pageSize=`: runs `queryDishes()` and returns `{ data, page, pageSize, total, totalPages }`. `pageSize` is capped at 50. |
 | `GET /api/dishes/[id]` | `app/api/dishes/[id]/route.js` | Dynamic (ƒ) | Looks up by slug **or** id; unknown id → `404 { error: "Dish not found" }`. |
-| `GET /api/orders/[id]` | `app/api/orders/[id]/route.js` | Dynamic (ƒ) | The status screen's poll source. Returns `{ data: order }`, `404 { error: "Order not found" }` for an unknown id. Reads are keyed by the UUID — the receipt link **is** the capability; the session-scoped list and ownership-checked cancel below are unchanged. |
-| `POST /api/orders` | `app/api/orders/route.js` | Dynamic (ƒ) | `orderSchema.safeParse(body)`; failure → `422 { error, fieldErrors }`; success → `201 { data: order }`; malformed JSON → `400`. Also `GET /api/orders` returns only the caller's orders (`401` without a session). |
-| `placeOrder` | `src/actions.js` (`"use server"`) | Server action | Same schema + same store as the route; sets the session cookie, writes the order, then `revalidatePath("/checkout")` and `revalidatePath("/cart")`. |
-| `cancelOrder` | `src/actions.js` (`"use server"`) | Server action | Reads the session, loads the record, and **checks ownership before writing** — `401` no session, `404` no record, `403` not the owner. |
+| `GET /api/orders/[id]` | `app/api/orders/[id]/route.js` | Dynamic (ƒ) | The status screen's poll source. Requires a session (`401` without one); returns `{ data: order }` **only for the owner** — a stranger's id and an unknown id both answer `404 { error: "Order not found" }`, so the endpoint is not an existence oracle. |
+| `POST /api/orders` | `app/api/orders/route.js` | Dynamic (ƒ) | Requires a session (`401 { error: "No active session" }` before the body is even read); then `orderSchema.safeParse(body)` — failure → `422 { error, fieldErrors }`, success → `201 { data: order }` with `sessionId = user.id`; malformed JSON → `400`. `GET /api/orders` returns only the caller's rows (`401` without a session). |
+| `GET /api/session` | `app/api/session/route.js` | Dynamic (ƒ) | `{ data: user \| null }` — the header's client leaf asking who the visitor is. Never returns the token or the password hash. |
+| `signIn(prevState, formData)` | `src/actions.js` (`"use server"`) | Server action | `findUserByEmail` + `verifyPassword`, then `startSession`, then `redirect(safeNextPath(next))`. Failure → `{ ok: false, error: "Wrong email or password." }` for both an unknown email and a bad password. |
+| `signOut()` | `src/actions.js` (`"use server"`) | Server action | `endSession()` deletes the session record and clears the cookie, then `redirect("/")`. The token is dead immediately, even in a copied cookie. |
+| `placeOrder(prevState, formData)` | `src/actions.js` (`"use server"`) | Server action | Requires a session (`401` if not signed in — no more guest sessions); same schema + same store as the route; writes the order with `sessionId = user.id`, then `revalidatePath("/checkout")` and `revalidatePath("/cart")`. |
+| `cancelOrder(orderId)` | `src/actions.js` (`"use server"`) | Server action | Reads the session, loads the record, and **checks ownership before writing** — `401` no session, `404` no record, `403` not the owner, `200` cancelled. |
+| `advanceOrder(orderId, _formData)` | `src/actions.js` (`"use server"`) | Server action | Staff-only: `401` no session, `403` not staff, `404` unknown, `409` cancelled, else moves the order one step along `pending → preparing → on the way → delivered`. |
 
 `/checkout` is the one page that submits through the action rather than the
 route: the task was to build the endpoint, prove it with `curl`, then rewrite the
@@ -118,10 +136,15 @@ action is the path the UI actually takes.
 | 200 | `GET` routes succeed |
 | 201 | an order is created |
 | 400 | request body is not valid JSON |
-| 401 | `GET /api/orders` or `cancelOrder` with no session cookie |
-| 403 | `cancelOrder` on an order owned by a different session |
-| 404 | unknown dish id, unknown order id, or `cancelOrder` on a missing order |
+| 401 | a private surface with no valid session cookie (`GET`/`POST /api/orders`, `GET /api/orders/[id]`, or the order actions). The middleware answers pages with a `307` redirect to `/signin?next=…` instead. |
+| 403 | `cancelOrder` on an order owned by a different session, or `advanceOrder` from a non-staff account |
+| 404 | unknown dish id; unknown **or someone else's** order id (reads); `cancelOrder` on a missing order; `/kitchen` for a non-staff account |
+| 409 | `advanceOrder` on a cancelled order |
 | 422 | zod validation failed — body carries `fieldErrors` keyed by field |
+
+The full credential model — the cookie flags, the session store, why reads
+return `404` while the cancel write returns `403`, and what this is *not* — is
+in [`AUTH.md`](./AUTH.md).
 
 ## Why category pages use path segments, not query params
 
@@ -178,7 +201,11 @@ curl -s -o /dev/null -w '%{http_code}' localhost:3000/menu/pizza   # 404
 curl -s localhost:3000/menu | grep -o 'class="dish-item"' | wc -l  # 6 (page 1)
 curl -s 'localhost:3000/api/dishes?q=shiro' | python -m json.tool  # total: 2
 curl -s 'localhost:3000/api/dishes?page=2' | python -m json.tool   # page 2 of 4
-curl -s -o /dev/null -w '%{http_code}' localhost:3000/api/orders/00000000-0000-0000-0000-000000000000  # 404
+curl -s -o /dev/null -w '%{http_code}' localhost:3000/api/orders/00000000-0000-0000-0000-000000000000  # 401 without a cookie
 npm run measure -- menu day41      # First Load JS for /menu
 npm run measure -- checkout        # "no prerendered HTML" — it is dynamic
+# Day 42 — auth (see AUTH.md §10 for the full set)
+curl -s -o /dev/null -w '%{http_code} -> %{redirect_url}' localhost:3000/checkout  # 307 -> /signin?next=%2Fcheckout
+curl -s -o /dev/null -w '%{http_code}' localhost:3000/kitchen                       # 307 without a session
+curl -s -X POST localhost:3000/api/orders -H 'Content-Type: application/json' -d '{}'  # 401 before parsing
 ```

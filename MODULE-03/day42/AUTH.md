@@ -364,8 +364,8 @@ $ curl -s -w '\n%{http_code}\n' -X POST localhost:3000/api/orders \
 # 3. Sign in and read the cookie's flags off the wire
 $ curl -s -D - -o /dev/null -X POST localhost:3000/signin \
     -F 'email=marta@addiseats.et' -F 'password=AddisMarta1!' ...
-set-cookie: addis_eats_session=<token>; Path=/; Max-Age=604800; Secure; HttpOnly; SameSite=lax
-# 303 -> Location: /
+set-cookie: addis_eats_session=<token>; Path=/; Expires=…; Max-Age=604800; Secure; HttpOnly; SameSite=lax
+# 303 See Other -> Location: /
 
 # 4. The same write, now carrying the token
 $ curl -s -X POST localhost:3000/api/orders \

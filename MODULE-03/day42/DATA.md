@@ -1,6 +1,6 @@
 # DATA.md — every query this app makes, its key, its refresh rule, and why
 
-The app runs exactly **three SWR queries** (one of them is `null` by design)
+The app runs exactly **four SWR queries** (one of them is `null` by design)
 plus a handful of server-side reads that are not queries at all. This file
 records each key, each refresh rule, and the reasoning — nothing is configured
 by habit.
@@ -127,13 +127,47 @@ get page 1 only (a `<noscript>` note on the page says so), and a shared
 
 ---
 
+## Query 4 — who is signed in
+
+**Where:** `src/components/AccountMenu.jsx` (the header's client leaf)
+**Key:** `/api/session` — one constant key for the whole app.
+
+| Option | Value | Why |
+| --- | --- | --- |
+| `refreshInterval` | not set | The header does not need to *discover* a sign-out that happens in another tab; there is no cross-tab session story yet. It revalidates when it needs to (see below). |
+| `revalidateOnFocus` | default (`true`) | Cheap and correct here: this is the one query where "did something change while I was away?" is a real question — you sign in in another tab, come back, and the header should catch up. One request on focus of a tiny JSON body. |
+| `staleTime` | not set (0) | The answer is a boundary between signed-in and signed-out; it should not be served stale. |
+| `fallbackData` | none | Unlike the order and menu queries, there is **no server-rendered value to seed** — and that is the whole point (see below). The first render shows neither name nor "Sign in" link until the answer lands. |
+
+**Why this query exists at all — the constraint that shaped it.** The obvious
+way to render "Sign in" vs. the user's name is to read the session in the root
+layout or `Header`. But `cookies()` is a dynamic API: reading it in the layout
+would make **every** route in the app dynamic and silently drop `/` and
+`/menu` out of static/ISR. That cost is measured in `STRATEGY.md`'s route
+table, which Day 42 leaves untouched on purpose.
+
+So the header reads nothing. It mounts a client leaf that asks a small
+endpoint instead. The price is that the header's session state is resolved
+*after* hydration, one request later — the server never bakes a name into the
+static HTML. In exchange, `/`, `/cart` and `/menu` keep their strategies. The
+trade-off is stated plainly rather than hidden: the name appears a beat after
+first paint, and never at the cost of the static shell everyone else pays for.
+
+The endpoint never returns the token or the password hash — only
+`{ id, name, email, role }`, exactly what the header renders (and `role`,
+which decides the staff-only "Kitchen" link).
+
+---
+
 ## Server-side reads that are *not* queries
 
 | Read | Where | Rule | Why it is not SWR |
 | --- | --- | --- | --- |
 | `queryDishes({ page: 1 })` | `src/app/menu/page.js` | ISR, `revalidate = 3600` | The seed for Query 2/3. Fetching it client-side would reintroduce the round trip the server render already paid for. |
-| `getOrder(id)` | `src/app/orders/[id]/page.js` | `force-dynamic`, every request | Order status must be true at request time; the *updates* after that are Query 1's job. |
-| `getOrder(id)` | `GET /api/orders/[id]` | `force-dynamic` | The poll's source. Reads are keyed by the unguessable order UUID (the receipt link *is* the capability); the session-scoped `GET /api/orders` list and the ownership-checked `cancelOrder` write are unchanged from days 38–40. |
+| `getSession()` | `src/app/checkout/page.jsx`, `orders/page.jsx`, `orders/[id]/page.js`, `kitchen/page.jsx`, and every private route handler | `force-dynamic`, every request | The identity the page guards and the ownership check are built on. It must be true at request time — a cached answer would be a security bug, not a stale number. |
+| `getOrder(id)` | `src/app/orders/[id]/page.js` | `force-dynamic`, every request | Order status must be true at request time; the *updates* after that are Query 1's job. The page also checks `order.sessionId === user.id` and `notFound()`s a stranger — so the server render only ever holds *your* order. |
+| `listOrders()` | `src/app/orders/page.jsx`, `src/app/kitchen/page.jsx` | `force-dynamic` | `/orders` filters it to `sessionId === user.id` before rendering; `/kitchen` (staff) renders all of them. A read-list, not a client cache: the pages are dynamic and re-run per request. |
+| `getOrder(id)` | `GET /api/orders/[id]` | `force-dynamic` | The poll's source. Requires a session, and answers `404` for an unknown id **and** for someone else's id alike — the receipt link is no longer a bearer capability the way it was on Day 41; the cookie is. |
 | `getDishes()` / `DISHES` | `GET /api/dishes[...]` | `force-dynamic` | Query 3's source; also serves the bare `GET /api/dishes` (`{ data: [...] }`, all 20) which keeps the days 38–40 contract. It is not an SWR key — nothing in the app calls it. |
 
 ---
@@ -145,6 +179,7 @@ get page 1 only (a `<noscript>` note on the page says so), and a shared
 | 1 | `/api/orders/<uuid>` | every 5 s (`refreshInterval`), hidden tabs paused | 5 s | server HTML via `fallbackData` — no spinner |
 | 2 | `null` (empty term, page 1) | never — SWR is paused | n/a | server children in the HTML |
 | 3 | `/api/dishes?q=…&page=…&pageSize=6` | on key change only (no interval, no focus) | 30 s, `keepPreviousData` | server children until the first key activates |
+| 4 | `/api/session` | on mount and on focus (defaults) | 0 (default) | **nothing** — no server seed, the header resolves after hydration |
 
 **How to verify in the network tab (seconds, not minutes):**
 
@@ -158,3 +193,7 @@ get page 1 only (a `<noscript>` note on the page says so), and a shared
    address bar reads `?page=2`.
 5. Open `/orders/<id>` → content is in the HTML before any JS runs, then one
    request, then a steady 5 s cadence; "Last synced" ticks each time.
+6. Sign in → the header's name appears a beat after the page paints
+   (`/api/session` resolves); sign out → it reverts to "Sign in". The static
+   pages themselves never re-rendered on the server — the change is one client
+   query, not a dynamic route.

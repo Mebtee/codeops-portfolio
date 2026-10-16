@@ -14,21 +14,24 @@ Three rules drive everything:
 
 ## The directive inventory
 
-`grep -rn '"use client"' src/` returns **7** files:
+`grep -rn '"use client"' src/` returns **9** files:
 
 ```
-src/app/menu/SearchBox.jsx       live menu shell (Day 41): debounced SWR list + pager
-src/app/orders/[id]/OrderStatus.jsx  the 5 s poll over server-seeded data (Day 41)
-src/app/providers.jsx            the cart provider
 src/app/checkout/CheckoutForm.jsx the checkout form + server action call
+src/app/menu/SearchBox.jsx       live menu shell (Day 41): debounced SWR list + pager
+src/app/orders/[id]/OrderStatus.jsx  the 5 s poll (Day 41) + the cancel write (Day 42)
+src/app/providers.jsx            the cart provider
+src/app/signin/SignInForm.jsx    the sign-in form + server action call (Day 42)
+src/components/AccountMenu.jsx   who is signed in (Day 42): SWR over /api/session + sign-out
 src/components/AddToCartButton   the "+ Add" button
 src/components/CartBadge         the header cart counter
 src/components/CartList          the cart table
 ```
 
 Every one of them is a leaf that owns a click handler, a piece of state, or a
-query. Nothing above a leaf is marked: no page (including `/orders/[id]`, which
-stays a server component), no layout, no `DishList`, no data module.
+query. Nothing above a leaf is marked: no page (including `/orders/[id]`,
+`/orders`, `/kitchen` and `/signin`, which all stay server components), no
+layout, no `DishList`, no data module.
 
 > Day 38's `CategoryBar` (the brief's FilterShell) is gone: Day 41's `SearchBox`
 > replaced a shell that rendered server `children` and owned nothing with a
@@ -36,11 +39,19 @@ stays a server component), no layout, no `DishList`, no data module.
 > the same idea; it now has a job, so it is one file instead of two.
 >
 > The brief's tip: *"on a well-sorted application of this size you should find
-> three or four"* — this one lands on **7**, because the cart has three
+> three or four"* — this one lands on **9**, because the cart has three
 > genuinely independent interactive leaves (badge, add button, cart table), the
-> checkout form is a fourth, and Day 41 adds two more genuinely independent
-> ones: the menu list and the order poll. Merging them into a single file would
-> only hide the boundary, not move it.
+> checkout form is a fourth, Day 41 adds two more (the menu list and the order
+> poll), and Day 42 adds two: the account menu and the sign-in form. Merging
+> them into a single file would only hide the boundary, not move it.
+
+The account menu is the Day 42 case worth naming: authentication *looks* like
+something the header should know, but reading `cookies()` in `Header` (a
+server component) would make every route dynamic. So `Header` stays server
+markup and mounts one client leaf — `AccountMenu` — that asks `/api/session`
+who the visitor is. The boundary rule held: the directive went on the smallest
+leaf that owns the query, not on the header that could have avoided it (see
+`DATA.md`, Query 4).
 
 ### The server action boundary
 
@@ -53,13 +64,19 @@ back to the server.
 - `CheckoutForm` (client) imports `placeOrder` and calls it through
   `useActionState`, which is where the pending flag and the returned
   `fieldErrors` come from.
-- `placeOrder` and `cancelOrder` are the only code that touches
-  `lib/session.js` (`cookies()`) and `lib/orders.js` (`node:fs`). Because they
-  run on the server, neither `node:fs` nor the cookie jar reaches the browser:
-  `grep -rl "orders.json" .next/static/chunks/` finds nothing.
-- `cancelOrder` re-derives the session and the record's owner **on the server**
-  and refuses to write unless they match — the ownership check cannot be
-  bypassed from the console because the client never sees another session's id.
+- `signIn`, `signOut`, `placeOrder`, `cancelOrder` and `advanceOrder` are the
+  only code that touches `lib/session.js` (`cookies()`), `lib/auth.js`
+  (`node:crypto`, the user and session stores) and `lib/orders.js`
+  (`node:fs`). Because they run on the server, none of that — not the cookie
+  jar, not the password hashes, not the file I/O — reaches the browser:
+  `grep -rl "orders.json" .next/static/chunks/` finds nothing, and neither does
+  a search for `users.json` or `scrypt`.
+- Each action re-derives the session **and** re-checks authority on the server
+  before writing: `cancelOrder` loads the record and refuses unless
+  `order.sessionId === session.user.id` (`403` otherwise), and `advanceOrder`
+  refuses unless `session.user.role === "staff"`. Neither check can be bypassed
+  from the console, because the client never sees another account's id or
+  another account's role — it only holds a reference the server resolves.
 
 `app/menu/SearchBox.jsx` is the **only client component in the menu
 segment** — the error boundary was removed from that segment for exactly this
@@ -76,8 +93,9 @@ stay server components.
 | `HomePage`        | `src/app/page.jsx`          | Server                     | no             | Static copy.                                                                                                                               |
 | `Providers`       | `src/app/providers.jsx`     | **Client**                 | **yes**        | The single client entry at the root. Mounts `CartProvider` so every consumer below can be a client leaf without importing the store itself.  |
 | `CartContext`     | `src/cart/CartContext.jsx`  | Client by inheritance      | **no**         | Only imported from `providers.jsx` (a client entry), so it already compiles as client code. Marking it would be redundant; importing it from a server file would be the actual bug. |
-| `Header`          | `src/components/Header.jsx` | Server                     | no             | Brand + nav links are pure markup; it renders one client leaf (`CartBadge`).                                                               |
+| `Header`          | `src/components/Header.jsx` | Server                     | no             | Brand + nav links are pure markup — and it deliberately does **not** read the session (that would make every route dynamic). It renders two client leaves: `AccountMenu` and `CartBadge`. |
 | `Footer`          | `src/components/Footer.jsx` | Server                     | no             | Static text.                                                                                                                               |
+| `AccountMenu`     | `src/components/AccountMenu.jsx` | **Client**            | **yes**        | Day 42's leaf: `useSWR("/api/session")` → "Sign in" link, or the name + a sign-out form, plus the staff-only Kitchen link. The header learns who you are from this one query, not from `cookies()`. |
 | `CartBadge`       | `src/components/CartBadge.jsx` | **Client**              | **yes**        | Reads `count` from context — state can only be read in the browser. The smallest leaf the header needs.                                     |
 | `MenuLayout`      | `src/app/menu/layout.jsx`   | Server                     | no             | Just segment metadata — renders `children` bare. The old category sidebar was removed by request, so the list is now full-width.               |
 | `MenuPage`        | `src/app/menu/page.js`      | **Server, async**          | no             | `await queryDishes({ page: 1 })` + `revalidate = 3600`. Passes the first page to `SearchBox` as `fallbackData` **and** as a server `DishList` slot. Still no hooks, no `loading`/`error` state, no fetch of its own.         |
@@ -88,16 +106,22 @@ stay server components.
 | `MenuSlugPage`    | `src/app/menu/[id]/page.jsx`| **Server, async**          | no             | `await params`, `generateStaticParams()`, `notFound()`. Category pages reuse server `DishList`.                                             |
 | `CartPage`        | `src/app/cart/page.jsx`     | Server                     | no             | Server done intentionally: it holds no copy — the client `CartList` is the only child, and it renders nothing until the cart has items.          |
 | `CartList`        | `src/components/CartList.jsx` | **Client**               | **yes**        | Reads and mutates cart state (quantity, remove, clear). An empty cart renders `null` — no placeholder text on screen.                           |
-| `CheckoutPage`    | `src/app/checkout/page.jsx` | **Server, dynamic**        | no             | `await cookies()` — a request-time API, not a client fetch. Kept `force-dynamic` even though the page renders no visible text (blank by request). |
+| `CheckoutPage`    | `src/app/checkout/page.jsx` | **Server, dynamic**        | no             | `await getSession()` — a request-time API, not a client fetch. Kept `force-dynamic` even though the page renders no visible text (blank by request). |
 | `CheckoutForm`    | `src/app/checkout/CheckoutForm.jsx` | **Client**         | **yes**        | Calls the `placeOrder` server action via `useActionState`; owns the pending flag and renders the returned `fieldErrors`. The submission has no `fetch`. |
-| `OrderStatusPage` | `src/app/orders/[id]/page.js` | **Server, async**        | no             | `await params`, `await getOrder(id)`, `notFound()`. Renders the order into the HTML, then hands it to the client `OrderStatus` as `fallbackData` — the seed the poll updates. |
-| `OrderStatus`     | `src/app/orders/[id]/OrderStatus.jsx` | **Client**       | **yes**        | The only client component in the order segment. One `useSWR(url, fetcher, { fallbackData, refreshInterval: 5000, … })` — no manual `setInterval`, no `useEffect`, no spinner on first paint. |
+| `OrdersPage`      | `src/app/orders/page.jsx`   | **Server, dynamic**        | no             | `await getSession()`, then `listOrders().filter((o) => o.sessionId === user.id)` — the account's own receipts. |
+| `KitchenPage`     | `src/app/kitchen/page.jsx`  | **Server, dynamic**        | no             | `await getSession()`; `notFound()` unless `role === "staff"`. Renders every account's orders with a bound-action **Advance** form. |
+| `SignInPage`      | `src/app/signin/page.js`    | **Server, dynamic**        | no             | Reads `?next=`, runs `safeNextPath`, and renders server markup around the client form + the seeded-accounts panel. |
+| `SignInForm`      | `src/app/signin/SignInForm.jsx` | **Client**             | **yes**        | The `signIn` action via `useActionState`; carries `next` as a hidden field. |
+| `OrderStatusPage` | `src/app/orders/[id]/page.js` | **Server, async**        | no             | `await params`, `await getSession()`, `await getOrder(id)`, ownership check, `notFound()`. Renders the order into the HTML, then hands it to the client `OrderStatus` as `fallbackData` — the seed the poll updates. |
+| `OrderStatus`     | `src/app/orders/[id]/OrderStatus.jsx` | **Client**       | **yes**        | The only client component in the order segment. One `useSWR(url, fetcher, { fallbackData, refreshInterval: 5000, … })` — no manual `setInterval`, no `useEffect`, no spinner on first paint — plus the Day 42 cancel button (`cancelOrder`). |
 | `fetcher`         | `src/lib/fetcher.js`        | **Client** (shared)        | no             | The one `useSWR` fetcher: `res.ok` or throw. Imported by the two client queries; carries no directive because it is only ever reached from client entries. |
 | `format.js`       | `src/lib/format.js`         | **Shared**                 | no             | `fmt` for prices. Extracted from `data/dishes.js` on Day 41 so the client `SearchBox`→`DishList` path formats prices without pulling in `node:fs`. |
 | `schema.js`       | `src/lib/schema.js`         | **Shared**                 | no             | The one zod schema. Imported by the client form-adjacent code, the `POST /api/orders` route, and `placeOrder` — a single source of truth for what a valid order is. |
-| `actions.js`      | `src/actions.js`            | **Server only** (`"use server"`) | no      | `placeOrder` + `cancelOrder`. Writes orders, sets the session, revalidates, and enforces ownership. |
+| `actions.js`      | `src/actions.js`            | **Server only** (`"use server"`) | no      | `signIn`, `signOut`, `placeOrder`, `cancelOrder`, `advanceOrder`. Verifies passwords, sets/clears the session, writes orders, revalidates, and enforces ownership + role. |
 | `orders.js`       | `src/lib/orders.js`         | **Server only**            | no             | `node:fs`-backed order store (`data/orders.json`). Never imported by a client component. |
-| `session.js`      | `src/lib/session.js`        | **Server only**            | no             | Reads/sets the `addis_eats_session` cookie. |
+| `session.js`      | `src/lib/session.js`        | **Server only**            | no             | `getSession` / `startSession` / `endSession` / `safeNextPath`. Pulls in `node:`-backed `auth.js`, so it is only reachable from server components, route handlers and actions — never the middleware. |
+| `session-cookie.js` | `src/lib/session-cookie.js` | **Edge-safe, shared**    | no             | The only auth module with **no `node:` imports**: `SESSION_COOKIE`, `SESSION_TOKEN_PATTERN`, `SESSION_COOKIE_OPTIONS`, `isSessionToken`. This is what makes the middleware legal on the edge runtime. |
+| `auth.js`         | `src/lib/auth.js`           | **Server only**            | no             | `node:fs` + `node:crypto`: the user store (`users.json`), `verifyPassword` (scrypt + `timingSafeEqual`), and the session store (`sessions.json`). |
 | `dishes.js`       | `src/data/dishes.js`        | **Server only**            | no             | Uses `node:fs` to read `public/menu.json`; exports `queryDishes`/`PAGE_SIZE` and re-exports `fmt`. Never imported by a client component, so it stays out of the bundle entirely — the client formatting path goes through `lib/format.js` instead.                     |
 
 ## The boundary techniques
