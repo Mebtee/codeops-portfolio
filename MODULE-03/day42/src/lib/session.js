@@ -75,3 +75,16 @@ export async function endSession() {
   }
   store.delete(SESSION_COOKIE);
 }
+
+export function safeNextPath(value, fallback = "/") {
+  if (typeof value !== "string" || !value.startsWith("/")) {
+    return fallback;
+  }
+  if (value.startsWith("//") || value.startsWith("/\\")) {
+    return fallback;
+  }
+  if (/[\u0000-\u001f]/.test(value)) {
+    return fallback;
+  }
+  return value;
+}

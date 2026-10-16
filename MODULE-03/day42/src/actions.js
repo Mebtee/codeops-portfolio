@@ -6,6 +6,7 @@ import { orderSchema, fieldErrorsOf } from "@/lib/schema";
 import {
   ensureSessionId,
   getSessionId,
+  safeNextPath,
   startSession,
   endSession,
 } from "@/lib/session";
@@ -29,7 +30,7 @@ export async function signIn(_prevState, formData) {
 
   const next = formData.get("next");
   await startSession(user.id);
-  redirect(typeof next === "string" && next ? next : "/");
+  redirect(safeNextPath(next));
 }
 
 export async function signOut() {

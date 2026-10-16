@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import SignInForm from "./SignInForm";
-import { getSession } from "@/lib/session";
+import { getSession, safeNextPath } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
@@ -17,9 +17,12 @@ const DEMO_ACCOUNTS = [
 
 export default async function SignInPage({ searchParams }) {
   const { next } = await searchParams;
+  const target = safeNextPath(next);
+  const rejected = typeof next === "string" && next !== target;
+
   const session = await getSession();
   if (session) {
-    redirect(next ?? "/");
+    redirect(target);
   }
 
   return (
@@ -29,8 +32,20 @@ export default async function SignInPage({ searchParams }) {
         One account tracks your orders and unlocks checkout.
       </p>
 
+      {target !== "/" && (
+        <p className="page-sub">
+          You will return to <code>{target}</code> after signing in.
+        </p>
+      )}
+      {rejected && (
+        <p className="err">
+          That return link pointed somewhere unsafe, so sign-in will land on the
+          home page instead.
+        </p>
+      )}
+
       <div className="signin-grid">
-        <SignInForm next={next} />
+        <SignInForm next={target === "/" ? null : target} />
 
         <aside className="demo-accounts">
           <h2>Demo accounts</h2>
