@@ -696,3 +696,90 @@ a {
 .menu-pager .page-of {
   font-size: 13px;
 }
+
+.account-link {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.account-menu {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.account-menu form {
+  margin: 0;
+}
+
+.account-menu button {
+  background: none;
+  border: 1px solid #ffffff;
+  border-radius: 999px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 5px 12px;
+}
+
+.account-menu button:hover {
+  background: #ffffff;
+  color: #12100e;
+}
+
+.signin-grid {
+  display: grid;
+  gap: 28px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 860px) {
+  .signin-grid {
+    align-items: start;
+    grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+  }
+}
+
+.demo-accounts {
+  border: 1px dashed #ffffff;
+  border-radius: 14px;
+  padding: 18px 20px;
+}
+
+.demo-accounts h2 {
+  font-size: 17px;
+  margin: 0 0 8px;
+}
+
+.demo-accounts p {
+  color: #ffffff;
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+.demo-accounts table {
+  border-collapse: collapse;
+  font-size: 14px;
+  width: 100%;
+}
+
+.demo-accounts th,
+.demo-accounts td {
+  padding: 6px 12px 6px 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.demo-accounts th {
+  color: #ffffff;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.demo-accounts code {
+  font-size: 13px;
+}

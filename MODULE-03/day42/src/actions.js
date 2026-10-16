@@ -1,14 +1,40 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { orderSchema, fieldErrorsOf } from "@/lib/schema";
-import { ensureSessionId, getSessionId } from "@/lib/session";
+import {
+  ensureSessionId,
+  getSessionId,
+  startSession,
+  endSession,
+} from "@/lib/session";
+import { findUserByEmail, verifyPassword } from "@/lib/auth";
 import {
   createOrder,
   getOrder,
   newOrder,
   updateOrder,
 } from "@/lib/orders";
+
+export async function signIn(_prevState, formData) {
+  const user = findUserByEmail(formData.get("email"));
+  if (!user || !verifyPassword(user, formData.get("password"))) {
+    return {
+      status: 401,
+      ok: false,
+      error: "Wrong email or password.",
+    };
+  }
+
+  await startSession(user.id);
+  redirect("/");
+}
+
+export async function signOut() {
+  await endSession();
+  redirect("/");
+}
 
 function parseItems(raw) {
   try {

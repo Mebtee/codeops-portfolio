@@ -1,5 +1,6 @@
 import Link from "next/link";
 import CartBadge from "@/components/CartBadge";
+import AccountMenu from "@/components/AccountMenu";
 
 export default function Header() {
   return (
@@ -13,6 +14,7 @@ export default function Header() {
           <Link href="/cart">Cart</Link>
           <Link href="/checkout">Checkout</Link>
         </nav>
+        <AccountMenu />
         <CartBadge />
       </div>
     </header>
