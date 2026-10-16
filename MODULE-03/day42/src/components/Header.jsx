@@ -13,6 +13,7 @@ export default function Header() {
           <Link href="/menu">Menu</Link>
           <Link href="/cart">Cart</Link>
           <Link href="/checkout">Checkout</Link>
+          <Link href="/orders">Orders</Link>
         </nav>
         <AccountMenu />
         <CartBadge />
