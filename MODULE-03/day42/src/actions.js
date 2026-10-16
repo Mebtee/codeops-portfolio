@@ -27,8 +27,9 @@ export async function signIn(_prevState, formData) {
     };
   }
 
+  const next = formData.get("next");
   await startSession(user.id);
-  redirect("/");
+  redirect(typeof next === "string" && next ? next : "/");
 }
 
 export async function signOut() {

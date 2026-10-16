@@ -5,7 +5,7 @@ import { signIn } from "@/actions";
 
 const initialState = { status: 0, ok: false, error: null };
 
-export default function SignInForm() {
+export default function SignInForm({ next }) {
   const [state, formAction, isPending] = useActionState(
     signIn,
     initialState
@@ -13,6 +13,8 @@ export default function SignInForm() {
 
   return (
     <form action={formAction} className="checkout-form" noValidate>
+      {next ? <input type="hidden" name="next" value={next} /> : null}
+
       <div className="field">
         <label htmlFor="email">Email</label>
         <input

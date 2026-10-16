@@ -15,10 +15,11 @@ const DEMO_ACCOUNTS = [
   { email: "kitchen@addiseats.et", password: "KitchenStaff1!", role: "staff" },
 ];
 
-export default async function SignInPage() {
+export default async function SignInPage({ searchParams }) {
+  const { next } = await searchParams;
   const session = await getSession();
   if (session) {
-    redirect("/");
+    redirect(next ?? "/");
   }
 
   return (
@@ -29,7 +30,7 @@ export default async function SignInPage() {
       </p>
 
       <div className="signin-grid">
-        <SignInForm />
+        <SignInForm next={next} />
 
         <aside className="demo-accounts">
           <h2>Demo accounts</h2>
