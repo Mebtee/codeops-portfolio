@@ -3,4 +3,5 @@ node_modules/
 out/
 npm-debug.log*
 
-/data/
+/data/*
+!/data/users.json

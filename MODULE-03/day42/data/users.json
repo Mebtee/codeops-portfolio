@@ -1,0 +1,23 @@
+[
+  {
+    "id": "usr_marta",
+    "name": "Marta Bekele",
+    "email": "marta@addiseats.et",
+    "role": "customer",
+    "password": "9a5967c495150fe603463096df9004f7$b6852cc966a5e682e4b0ceddfa6be0f34dbf4c59f58b0e8771e81829217bd48d32263137b62dd5c77628f875634a408918f1a50d0b18dbfe7a75c365d291db05"
+  },
+  {
+    "id": "usr_dawit",
+    "name": "Dawit Alemu",
+    "email": "dawit@addiseats.et",
+    "role": "customer",
+    "password": "9f4bc57adff82c7676d80a43ce51e43b$87229125529152ea9771c167724c186a29263c0d2946bda6d7f39097564c2426cb07339b4d59f409225412d3739aa290922b6925cf4f2baaf5a5df3b882a513d"
+  },
+  {
+    "id": "usr_kitchen",
+    "name": "Kitchen Line",
+    "email": "kitchen@addiseats.et",
+    "role": "staff",
+    "password": "2f5131315e7c4fad9e70716675bfe01e$16e354bbee070f0257d5be00eb560632327e68e6cba4b8950e893e0f31916d28e3b8299ea98c62de59fcde0e28398be7b93a4589f29acdb8095e3b8f6b3e2d37"
+  }
+]
