@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
 import { orderSchema, fieldErrorsOf } from "@/lib/schema";
-import { ensureSessionId, getSessionId } from "@/lib/session";
+import { getSession } from "@/lib/session";
 import { createOrder, listOrders, newOrder } from "@/lib/orders";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "No active session" }, { status: 401 });
+  }
+
   let body;
   try {
     body = await request.json();
@@ -21,16 +26,17 @@ export async function POST(request) {
     );
   }
 
-  const sessionId = await ensureSessionId();
-  const order = createOrder(newOrder(parsed.data, sessionId));
+  const order = createOrder(newOrder(parsed.data, session.user.id));
   return NextResponse.json({ data: order }, { status: 201 });
 }
 
 export async function GET() {
-  const sessionId = await getSessionId();
-  if (!sessionId) {
+  const session = await getSession();
+  if (!session) {
     return NextResponse.json({ error: "No active session" }, { status: 401 });
   }
-  const orders = listOrders().filter((order) => order.sessionId === sessionId);
+  const orders = listOrders().filter(
+    (order) => order.sessionId === session.user.id
+  );
   return NextResponse.json({ data: orders });
 }

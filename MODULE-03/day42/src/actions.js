@@ -4,8 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { orderSchema, fieldErrorsOf } from "@/lib/schema";
 import {
-  ensureSessionId,
-  getSessionId,
+  getSession,
   safeNextPath,
   startSession,
   endSession,
@@ -48,6 +47,15 @@ function parseItems(raw) {
 }
 
 export async function placeOrder(_prevState, formData) {
+  const session = await getSession();
+  if (!session) {
+    return {
+      status: 401,
+      ok: false,
+      error: "Please sign in to place an order.",
+    };
+  }
+
   const payload = Object.fromEntries(formData.entries());
   payload.items = parseItems(payload.items);
 
@@ -61,8 +69,7 @@ export async function placeOrder(_prevState, formData) {
     };
   }
 
-  const sessionId = await ensureSessionId();
-  const order = createOrder(newOrder(parsed.data, sessionId));
+  const order = createOrder(newOrder(parsed.data, session.user.id));
 
   revalidatePath("/checkout");
   revalidatePath("/cart");
@@ -71,8 +78,8 @@ export async function placeOrder(_prevState, formData) {
 }
 
 export async function cancelOrder(orderId) {
-  const sessionId = await getSessionId();
-  if (!sessionId) {
+  const session = await getSession();
+  if (!session) {
     return { status: 401, ok: false, error: "No active session." };
   }
 
@@ -80,7 +87,7 @@ export async function cancelOrder(orderId) {
   if (!order) {
     return { status: 404, ok: false, error: "Order not found." };
   }
-  if (order.sessionId !== sessionId) {
+  if (order.sessionId !== session.user.id) {
     return { status: 403, ok: false, error: "You do not own this order." };
   }
   if (order.status === "cancelled") {

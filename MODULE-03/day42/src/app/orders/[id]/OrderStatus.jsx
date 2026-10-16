@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import fetcher from "@/lib/fetcher";
+import { cancelOrder } from "@/actions";
 
 const money = (value) => "ETB " + Number(value || 0).toLocaleString("en-US");
 
@@ -32,6 +33,8 @@ export default function OrderStatus({ initialOrder }) {
 
   const [syncedAt, setSyncedAt] = useState(null);
   const wasValidating = useRef(isValidating);
+  const [cancelError, setCancelError] = useState(null);
+  const [isCancelling, startCancelling] = useTransition();
 
   useEffect(() => {
     if (wasValidating.current && !isValidating) {
@@ -39,6 +42,18 @@ export default function OrderStatus({ initialOrder }) {
     }
     wasValidating.current = isValidating;
   }, [isValidating]);
+
+  function onCancel() {
+    setCancelError(null);
+    startCancelling(async () => {
+      const result = await cancelOrder(initialOrder.id);
+      if (result?.ok) {
+        mutate();
+      } else {
+        setCancelError(result?.error ?? "Could not cancel this order.");
+      }
+    });
+  }
 
   const cancelled = order.status === "cancelled";
   const activeStep = cancelled ? -1 : (STEP_OF_STATUS[order.status] ?? 0);
@@ -144,7 +159,19 @@ export default function OrderStatus({ initialOrder }) {
           <Link href="/menu" className="cta">
             Back to the menu
           </Link>
+          {!cancelled && order.status !== "delivered" && (
+            <button
+              type="button"
+              className="link-btn"
+              onClick={onCancel}
+              disabled={isCancelling}
+            >
+              {isCancelling ? "Cancelling…" : "Cancel order"}
+            </button>
+          )}
         </div>
+
+        {cancelError && <p className="err">{cancelError}</p>}
       </div>
     </section>
   );
