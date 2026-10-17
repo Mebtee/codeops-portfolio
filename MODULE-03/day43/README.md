@@ -16,12 +16,20 @@ away from private routes, ownership checks on every write, and a staff-only
 kitchen board. The credential model, the cookie flags, and the ownership
 policy are in [`AUTH.md`](./AUTH.md).
 
+Day 43 adds **performance & measurement**: every photo moves to `next/image`
+with real dimensions and an honest `sizes`, the home hero is the only image
+with `priority`, Inter is self-hosted with `next/font` instead of a Google
+Fonts `<link>`, and `gtag` loads through `next/script` with a lazy strategy.
+The before/after Lighthouse numbers and what caused each change are in
+[`PERF.md`](./PERF.md).
+
 ```bash
 npm install
 npm run dev      # http://localhost:3000
 npm run build    # production build (strategy table below)
 npm run start    # serve the production build
 npm run measure  # First Load JS for a prerendered route (see BOUNDARY.md)
+npm run photos   # regenerate the placeholder dish/hero photos (sharp)
 ```
 
 Stack: **Next.js 16** (App Router, Turbopack) + **React 19** + **Zod 3** +
@@ -115,6 +123,49 @@ Two design notes worth stating outright:
 - **A guest session is gone.** Days 38–41 minted a session on first write and
   used it as the owner key (`ensureSessionId`/`getSessionId`). Both are
   deleted: writing an order now **requires** signing in first.
+
+---
+
+## Day 43 — performance & measurement
+
+A **measure → fix → re-measure** loop on images, fonts and third-party
+scripts. The full before/after tables and honest caveats live in
+[`PERF.md`](./PERF.md); this is the summary. Numbers are Lighthouse 13, mobile
+preset, production build, median of two runs per page.
+
+| Page    | Metric      | Before   | After    |
+| ------- | ----------- | -------- | -------- |
+| `/`     | Perf score  | 0.60     | **0.93** |
+|         | LCP         | 7857 ms  | 2715 ms  |
+|         | Page weight | 1915 KB  | 422 KB   |
+| `/menu` | Perf score  | 0.64     | **0.82** |
+|         | LCP         | 7785 ms  | 4259 ms  |
+|         | Page weight | 1926 KB  | 1008 KB  |
+
+The four changes, each its own commit:
+
+| # | Change | File | Why it helps |
+| - | ------ | ---- | ------------ |
+| 1 | `<img>` → **`next/image`** with true `width`/`height` and a CSS-matched `sizes` | `src/app/menu/DishCard.jsx`, `src/app/page.jsx` | Serves correctly sized WebP (hero 614 KB → 42 KB), reserves the aspect ratio, and stops React 19's automatic `<img>` preload from pulling all 6 dish photos into the home page through the prefetched `/menu` payload. |
+| 2 | **`priority`** on the home hero only | `src/app/page.jsx` | Makes the LCP element `eager` and emits `<link rel="preload" as="image">` with the full `imageSrcSet`; dish cards stay lazy (the menu page has **zero** image preloads). |
+| 3 | Google Fonts `<link>` → **`next/font`** | `src/app/layout.jsx`, `src/app/globals.css` | Drops the external `fonts.googleapis.com`/`fonts.gstatic.com` round-trips from the critical path and self-hosts Inter with a metric-adjusted fallback. Biggest FCP win (3.2 s → 0.8 s). |
+| 4 | Eager `gtag` `<script>` → **`next/script strategy="lazyOnload"`** | `src/app/layout.jsx` | Keeps the 155 KB analytics script off the startup main thread; home TBT 360 ms → 204 ms. |
+| 5 | `.env.example` + `.env*.local` gitignored | `.env.example`, `.gitignore` | Documents `NEXT_PUBLIC_GA_ID` (gtag) and `NEXT_PUBLIC_SITE_URL` (`metadataBase`). |
+
+Two things worth stating plainly, because a naive summary would get them
+wrong:
+
+- **CLS was already ~0 and stayed ~0.** React 19 preloads plain `<img>`s, so
+  even the "unsized" baseline reserved space before paint. `next/image` makes
+  that explicit instead of lucky; the real wins are **LCP, FCP, Speed Index and
+  bytes**.
+- **The home page was downloading the menu's photos.** In the baseline, React
+  19's automatic image preload applied to the `<img>`s inside Next's prefetched
+  `/menu` payload, so `/` fetched 7 images / 1547 KB. After moving to lazy
+  `next/image`, `/` fetches one image / 42 KB.
+
+The placeholder photos are generated with `sharp` (`npm run photos`,
+`scripts/generate-photos.mjs`) so the repo is self-contained.
 
 ---
 
@@ -337,8 +388,12 @@ proof that records are partitioned by account.
 
 ```text
 ClientAndServerSide/
-├── AUTH.md / STRATEGY.md / BOUNDARY.md / DATA.md
-├── public/menu.json
+├── AUTH.md / STRATEGY.md / BOUNDARY.md / DATA.md / PERF.md
+├── .env.example
+├── scripts/generate-photos.mjs      # sharp placeholder generator (npm run photos)
+├── public/
+│   ├── menu.json
+│   └── images/                      # hero + per-dish placeholder photos
 ├── data/
 │   ├── users.json                   # seed accounts (tracked)
 │   ├── orders.json                  # created at runtime (gitignored)
@@ -365,7 +420,7 @@ ClientAndServerSide/
     │   ├── orders/[id]/             # page.js (seed) + OrderStatus.jsx (poll + cancel)
     │   ├── kitchen/page.jsx         # staff-only board + Advance forms
     │   ├── checkout/page.jsx + CheckoutForm.jsx
-    │   ├── menu/page.js + SearchBox.jsx + menu/[id]/page.jsx
+    │   ├── menu/page.js + SearchBox.jsx + DishCard.jsx + menu/[id]/page.jsx
     │   ├── cart/page.jsx
     │   └── layout.jsx, page.jsx, providers.jsx
     ├── cart/CartContext.jsx
