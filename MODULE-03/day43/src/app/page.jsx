@@ -11,6 +11,7 @@ export default function HomePage() {
         width={1920}
         height={1080}
         sizes="(max-width: 1080px) calc(100vw - 40px), 1040px"
+        priority
       />
       <h1>
         Addis <span>Eats</span>
