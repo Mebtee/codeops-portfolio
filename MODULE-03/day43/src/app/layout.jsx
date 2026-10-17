@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import Providers from "./providers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -21,11 +22,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.variable}>
-        <script
-          async
+        <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="lazyOnload"
         />
-        <script
+        <Script
+          id="ga-init"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`,
           }}
