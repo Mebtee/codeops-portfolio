@@ -1,7 +1,14 @@
 import "./globals.css";
+import { Inter } from "next/font/google";
 import Providers from "./providers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-DEMO0000000";
 
@@ -13,17 +20,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossOrigin="anonymous"
-      />
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap"
-      />
-      <body>
+      <body className={inter.variable}>
         <script
           async
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
