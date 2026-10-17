@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { fmt } from "@/lib/format";
 import AddToCartButton from "@/components/AddToCartButton";
 
@@ -9,10 +10,13 @@ export default function DishCard({ dish }) {
       data-category={dish.cat}
       data-name={dish.name.toLowerCase()}
     >
-      <img
+      <Image
         className="dish-photo"
         src={`/images/dishes/${dish.slug}.jpg`}
         alt={dish.name}
+        width={960}
+        height={720}
+        sizes="(max-width: 555px) calc(100vw - 40px), (max-width: 821px) calc((100vw - 56px) / 2), calc((min(100vw, 1080px) - 72px) / 3)"
       />
       <div className="dish-title">
         <h3>
