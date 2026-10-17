@@ -318,6 +318,22 @@ a {
   color: #12100e;
 }
 
+/* Day 43 — images (before: unsized imgs, no aspect-ratio, CLS on load) */
+.hero-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  margin-bottom: 28px;
+}
+
+.dish-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
 .welcome {
   padding: 72px 0 40px;
 }

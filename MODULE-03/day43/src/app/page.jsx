@@ -3,6 +3,11 @@ import Link from "next/link";
 export default function HomePage() {
   return (
     <section className="welcome">
+      <img
+        className="hero-photo"
+        src="/images/hero-berbere-table.jpg"
+        alt="A table of Ethiopian dishes with berbere spice"
+      />
       <h1>
         Addis <span>Eats</span>
       </h1>
