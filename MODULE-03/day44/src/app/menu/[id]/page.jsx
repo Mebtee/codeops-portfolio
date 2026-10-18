@@ -22,6 +22,35 @@ export function generateStaticParams() {
   return [...dishes, ...categories];
 }
 
+export async function generateMetadata({ params }) {
+  const { id } = await params;
+
+  const dish = getDishBySlug(id);
+  if (dish) {
+    const summary = dish.desc || `Authentic Ethiopian dish from Addis Eats.`;
+    const description = `${dish.name} — ${fmt(dish.price)}. ${summary}`;
+    return {
+      title: dish.name,
+      description,
+      openGraph: {
+        title: dish.name,
+        description,
+        type: "article",
+      },
+    };
+  }
+
+  const category = getCategoryBySlug(id);
+  if (category && category.key !== "all") {
+    return {
+      title: category.label,
+      description: `Browse ${category.label.toLowerCase()} on the Addis Eats menu.`,
+    };
+  }
+
+  return {};
+}
+
 export default async function MenuSlugPage({ params }) {
   const { id } = await params;
 
