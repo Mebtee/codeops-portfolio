@@ -11,6 +11,9 @@ import {
 import DishList from "@/components/DishList";
 import AddToCartButton from "@/components/AddToCartButton";
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 export const dynamicParams = false;
 
 export function generateStaticParams() {
@@ -56,21 +59,48 @@ export default async function MenuSlugPage({ params }) {
 
   const dish = getDishBySlug(id);
   if (dish) {
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "MenuItem",
+      name: dish.name,
+      description: dish.desc,
+      image: [
+        `${SITE_URL}/images/dishes/${dish.slug}.jpg`,
+      ],
+      offers: {
+        "@type": "Offer",
+        price: dish.price,
+        priceCurrency: "ETB",
+        availability: "https://schema.org/InStock",
+      },
+      suitableForDiet: dish.isFasting
+        ? "https://schema.org/VegetarianDiet"
+        : undefined,
+      inLanguage: "en",
+      url: `${SITE_URL}/menu/${dish.slug}`,
+    };
+
     return (
-      <section>
-        <Link href="/menu" className="crumb">
-          Back to menu
-        </Link>
-        <div className="detail">
-          <div>
-            <h1>{dish.name}</h1>
-            <div className="dish-meta">
-              <span className="dish-price">{fmt(dish.price)}</span>
-              <AddToCartButton dish={dish} />
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <section>
+          <Link href="/menu" className="crumb">
+            Back to menu
+          </Link>
+          <div className="detail">
+            <div>
+              <h1>{dish.name}</h1>
+              <div className="dish-meta">
+                <span className="dish-price">{fmt(dish.price)}</span>
+                <AddToCartButton dish={dish} />
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </>
     );
   }
 
