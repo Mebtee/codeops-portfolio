@@ -10,29 +10,33 @@ export const metadata = {
 export default function HomePage() {
   return (
     <section className="welcome">
-      <Image
-        className="hero-photo"
-        src="/images/food.jpg"
-        alt="A spread of freshly cooked Ethiopian dishes from Addis Eats"
-        width={1408}
-        height={768}
-        sizes="(max-width: 1080px) calc(100vw - 40px), 1040px"
-        priority
-      />
-      <h1>
-        Addis <span>Eats</span>
-      </h1>
-      <p>
-        Authentic Ethiopian cooking delivered across Addis Ababa. Berbere,
-        niter kibbeh and injera made fresh every morning.
-      </p>
-      <div className="cta-row">
-        <Link href="/menu" className="cta">
-          Browse the menu
-        </Link>
-        <Link href="/checkout" className="cta secondary">
-          Checkout
-        </Link>
+      <div className="hero-copy">
+        <h1>
+          Addis <span>Eats</span>
+        </h1>
+        <p>
+          Authentic Ethiopian cooking delivered across Addis Ababa. Berbere,
+          niter kibbeh and injera made fresh every morning.
+        </p>
+        <div className="cta-row">
+          <Link href="/menu" className="cta">
+            Browse the menu
+          </Link>
+          <Link href="/checkout" className="cta secondary">
+            Checkout
+          </Link>
+        </div>
+      </div>
+      <div className="hero-media">
+        <Image
+          className="hero-photo"
+          src="/images/food.jpg"
+          alt="A spread of freshly cooked Ethiopian dishes from Addis Eats"
+          width={1408}
+          height={768}
+          sizes="(max-width: 860px) calc(100vw - 40px), 460px"
+          priority
+        />
       </div>
     </section>
   );

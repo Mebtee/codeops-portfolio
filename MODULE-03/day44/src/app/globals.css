@@ -398,8 +398,10 @@ a {
   display: block;
   width: 100%;
   height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
   border-radius: 16px;
-  margin-bottom: 28px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.38);
 }
 
 .dish-photo {
@@ -412,7 +414,35 @@ a {
 }
 
 .welcome {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 44px;
+  align-items: center;
   padding: 72px 0 40px;
+}
+
+.hero-media {
+  width: 100%;
+  max-width: 460px;
+  justify-self: end;
+}
+
+.hero-copy {
+  max-width: 560px;
+}
+
+@media (max-width: 860px) {
+  .welcome {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    padding: 48px 0 32px;
+  }
+
+  .hero-media {
+    max-width: 520px;
+    justify-self: center;
+    order: -1;
+  }
 }
 
 .welcome h1 {
