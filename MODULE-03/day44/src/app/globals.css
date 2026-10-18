@@ -552,6 +552,37 @@ a {
   font-size: 14px;
 }
 
+.summary-item {
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.summary-thumb {
+  width: 56px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.summary-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.summary-item-info small {
+  color: #6b6b6b;
+  font-size: 12px;
+}
+
+.summary-item .line-price {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
 .summary-total {
   border-bottom: none;
   margin-top: 6px;

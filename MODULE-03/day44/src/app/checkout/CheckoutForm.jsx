@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useCart } from "@/cart/CartContext";
 import { placeOrder } from "@/actions";
 
@@ -164,10 +165,23 @@ export default function CheckoutForm() {
           <h2>Order summary</h2>
           {items.map((item) => (
             <div className="summary-item" key={item.slug}>
-              <span>
-                {item.name} × {item.quantity}
-              </span>
-              <b>{money(item.price * item.quantity)}</b>
+              <Image
+                className="summary-thumb"
+                src="/images/food.jpg"
+                alt={`${item.name} — Addis Eats`}
+                width={1408}
+                height={768}
+                sizes="56px"
+              />
+              <div className="summary-item-info">
+                <b>{item.name}</b>
+                <small>
+                  {item.catLabel} · Qty {item.quantity}
+                </small>
+              </div>
+              <b className="line-price">
+                {money(item.price * item.quantity)}
+              </b>
             </div>
           ))}
           <div className="summary-total">
