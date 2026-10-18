@@ -65,9 +65,7 @@ export default async function MenuSlugPage({ params }) {
       "@type": "MenuItem",
       name: dish.name,
       description: dish.desc,
-      image: [
-        `${SITE_URL}/images/dishes/${dish.slug}.jpg`,
-      ],
+      image: [`${SITE_URL}/images/food.jpg`],
       offers: {
         "@type": "Offer",
         price: dish.price,
