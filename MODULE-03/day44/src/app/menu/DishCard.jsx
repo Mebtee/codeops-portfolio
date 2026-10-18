@@ -12,10 +12,10 @@ export default function DishCard({ dish }) {
     >
       <Image
         className="dish-photo"
-        src={`/images/dishes/${dish.slug}.jpg`}
-        alt={dish.name}
-        width={960}
-        height={720}
+        src="/images/food.jpg"
+        alt={`${dish.name} — Addis Eats`}
+        width={1408}
+        height={768}
         sizes="(max-width: 555px) calc(100vw - 40px), (max-width: 821px) calc((100vw - 56px) / 2), calc((min(100vw, 1080px) - 72px) / 3)"
       />
       <div className="dish-title">
