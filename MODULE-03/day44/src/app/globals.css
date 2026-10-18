@@ -249,6 +249,17 @@ a {
   font-size: 30px;
 }
 
+.detail-photo {
+  display: block;
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
 .crumb {
   color: var(--muted);
   font-size: 14px;

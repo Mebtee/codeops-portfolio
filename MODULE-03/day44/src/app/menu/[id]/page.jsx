@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
   DISHES,
@@ -91,6 +92,14 @@ export default async function MenuSlugPage({ params }) {
             Back to menu
           </Link>
           <div className="detail">
+            <Image
+              className="detail-photo"
+              src="/images/food.jpg"
+              alt={`${dish.name} — Addis Eats`}
+              width={1408}
+              height={768}
+              sizes="(max-width: 780px) 100vw, 460px"
+            />
             <div>
               <h1>{dish.name}</h1>
               <div className="dish-meta">
