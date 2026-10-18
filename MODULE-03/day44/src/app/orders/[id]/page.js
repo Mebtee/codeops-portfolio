@@ -22,8 +22,11 @@ export async function generateMetadata({ params }) {
   const order = await ownedOrder(id);
   return {
     title: order
-      ? `Order ${order.reference} — Addis Eats`
-      : "Order not found — Addis Eats",
+      ? `Order ${order.reference}`
+      : "Order not found",
+    description: order
+      ? `Track order ${order.reference} from the kitchen to your door.`
+      : "We could not find that order.",
   };
 }
 

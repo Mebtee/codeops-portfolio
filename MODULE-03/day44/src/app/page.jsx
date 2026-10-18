@@ -1,6 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 
+export const metadata = {
+  title: { absolute: "Addis Eats — Ethiopian food delivery" },
+  description:
+    "Authentic Ethiopian cooking delivered across Addis Ababa. Browse injera, wat, tibs and tej, then order to your door.",
+};
+
 export default function HomePage() {
   return (
     <section className="welcome">

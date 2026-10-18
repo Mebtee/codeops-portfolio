@@ -4,7 +4,9 @@ import { getSession } from "@/lib/session";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Checkout — Addis Eats",
+  title: "Checkout",
+  description:
+    "Confirm your delivery details and place your Addis Eats order.",
 };
 
 export default async function CheckoutPage() {

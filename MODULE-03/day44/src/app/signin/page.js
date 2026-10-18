@@ -6,7 +6,8 @@ import { getSession, safeNextPath } from "@/lib/session";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Sign in — Addis Eats",
+  title: "Sign in",
+  description: "Sign in to place orders and track deliveries.",
 };
 
 const DEMO_ACCOUNTS = [

@@ -4,10 +4,6 @@ import SearchBox from "./SearchBox";
 
 export const revalidate = 3600;
 
-export const metadata = {
-  title: "Menu — Addis Eats",
-};
-
 export default async function MenuPage() {
   const initial = await queryDishes({ page: 1 });
 

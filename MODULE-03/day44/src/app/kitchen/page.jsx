@@ -8,7 +8,8 @@ import { advanceOrder } from "@/actions";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Kitchen board — Addis Eats",
+  title: "Kitchen board",
+  description: "Live order queue for the Addis Eats kitchen team.",
 };
 
 const orderTotal = (order) =>

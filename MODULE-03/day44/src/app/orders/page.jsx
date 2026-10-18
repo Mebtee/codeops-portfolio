@@ -7,7 +7,8 @@ import { fmt } from "@/lib/format";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Your orders — Addis Eats",
+  title: "Your orders",
+  description: "Track the status of your past and current Addis Eats orders.",
 };
 
 const orderTotal = (order) =>
