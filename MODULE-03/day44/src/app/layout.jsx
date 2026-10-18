@@ -13,12 +13,17 @@ const inter = Inter({
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-DEMO0000000";
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 export const metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-  ),
-  title: "Addis Eats",
-  description: "Ethiopian food delivery — server and client component demo",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Addis Eats — Ethiopian food delivery",
+    template: "%s | Addis Eats",
+  },
+  description:
+    "Order authentic Ethiopian cooking delivered across Addis Ababa — berbere, niter kibbeh and injera made fresh every morning.",
 };
 
 export default function RootLayout({ children }) {
