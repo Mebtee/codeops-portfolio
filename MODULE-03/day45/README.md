@@ -384,6 +384,58 @@ proof that records are partitioned by account.
 
 ---
 
+## Day 45 — the ops dashboard
+
+`/dashboard` aggregates every order on the server and passes only summary
+arrays across the boundary — no order objects, no customer details, nothing
+that would need the client to know what a single order is.
+
+| Piece | File | Notes |
+| --- | --- | --- |
+| Aggregation + page | `src/app/dashboard/page.js` | reads `data/orders.json` via `@/lib/orders`, builds `byArea` / `byDay` / totals |
+| Bar + line charts | `src/app/dashboard/RevenueChart.jsx` | the only client code on the page; fixed-height SVG containers, ETB ticks |
+| Order table | `src/app/orders/OrderTable.jsx` | real `<table>` markup, `aria-sort` headers, sorting and paging from the URL |
+| Skeletons | `src/app/dashboard/loading.js`, `src/app/orders/loading.js` | five table rows shaped like the real thing |
+| Error boundary | `src/app/dashboard/error.js` | safety net for unexpected render failures |
+
+### The four states, forced
+
+The page reads a `state` query parameter so every state is one link away:
+
+| URL | What renders |
+| --- | --- |
+| `/dashboard` | data — stats, both charts, the paged table |
+| `/dashboard?state=loading` | skeleton — the server waits 3s so `loading.js` stays visible |
+| `/dashboard?state=empty` | empty — what a fresh install with no orders shows |
+| `/dashboard?state=error` | error — the server throws and the error panel is rendered |
+
+The same four links sit at the top of the dashboard itself (`state-links`), so
+the states are demonstrable by clicking, not just by typing URLs.
+
+### Chart accessibility
+
+- The line chart's full data set is repeated as a `<table>` directly beneath
+  the SVG — nobody has to see the chart to read the numbers.
+- Both SVGs carry `role="img"` and `aria-labelledby` pointing at their
+  headings; the daily heading names the range and the unit
+  ("Orders per day, 21 Sep – 20 Oct 2026 (orders)").
+- Table headers are real `<th scope>` cells whose sort links rewrite the URL
+  (`?sort=total&dir=asc&page=2`) and set `aria-sort`.
+
+### Demo data
+
+`data/orders.json` is gitignored, so a fresh clone starts in the empty state
+(the tip in the brief: build that state first). To fill it:
+
+```bash
+node scripts/seed-orders.mjs   # 160 deterministic orders over 30 days
+```
+
+The script keeps any real orders already in the file, replaces older demo
+rows, and uses a fixed PRNG seed so the charts are stable between runs.
+
+---
+
 ## Layout
 
 ```text
