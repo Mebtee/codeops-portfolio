@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "measure": "node scripts/first-load-js.mjs",
+    "seed": "node scripts/seed-orders.mjs",
     "photos": "node scripts/generate-photos.mjs"
   },
   "devDependencies": {
