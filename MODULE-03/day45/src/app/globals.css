@@ -1005,3 +1005,39 @@ a {
     grid-template-columns: 1fr auto;
   }
 }
+
+/* Day 45 — ops dashboard */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.stat-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px 18px;
+  color: #12100e;
+}
+
+.stat-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+  color: #6b6b6b;
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+}
+
+.stat-hint {
+  font-size: 13px;
+  color: #6b6b6b;
+  margin-top: 4px;
+}
