@@ -1041,3 +1041,69 @@ a {
   color: #6b6b6b;
   margin-top: 4px;
 }
+
+.chart-block {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 20px 22px 16px;
+  margin: 22px 0 0;
+  color: #12100e;
+}
+
+.chart-block h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #12100e;
+}
+
+.chart-block figcaption {
+  font-size: 13px;
+  color: #6b6b6b;
+  margin-top: 8px;
+}
+
+.chart-frame {
+  height: 340px;
+  margin-top: 6px;
+}
+
+.chart-frame svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.chart-grid {
+  stroke: #e5e7eb;
+  stroke-width: 1;
+}
+
+.chart-axis {
+  stroke: #9ca3af;
+  stroke-width: 1;
+}
+
+.chart-bar {
+  fill: #c2410c;
+}
+
+.chart-tick {
+  fill: #6b7280;
+  font-size: 12px;
+}
+
+.chart-label {
+  fill: #12100e;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.chart-value {
+  fill: #374151;
+  font-size: 12px;
+}
+
+.chart-axis-title {
+  fill: #6b7280;
+  font-size: 12px;
+}
