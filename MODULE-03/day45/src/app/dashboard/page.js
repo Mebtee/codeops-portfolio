@@ -2,6 +2,7 @@ import Link from "next/link";
 import { listOrders } from "@/lib/orders";
 import { fmt } from "@/lib/format";
 import RevenueChart, { OrdersPerDayChart } from "./RevenueChart";
+import OrderTable from "../orders/OrderTable";
 
 export const dynamic = "force-dynamic";
 
@@ -141,6 +142,8 @@ export default async function DashboardPage({ searchParams }) {
               </table>
             </div>
           </figure>
+
+          <OrderTable orders={orders} searchParams={params} basePath="/dashboard" />
         </>
       )}
     </section>

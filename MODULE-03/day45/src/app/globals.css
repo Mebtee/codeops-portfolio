@@ -1170,3 +1170,90 @@ a {
 .chart-table tbody th {
   font-weight: 600;
 }
+
+.orders-table {
+  margin-top: 26px;
+}
+
+.orders-table caption {
+  caption-side: top;
+  text-align: left;
+  padding: 0 0 10px;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.orders-table th .th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #12100e;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.orders-table th[aria-sort="none"] .th-sort {
+  color: #6b7280;
+}
+
+.orders-table td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.orders-table .status-badge {
+  border: 1px solid #12100e;
+  color: #12100e;
+}
+
+.orders-table .status-badge[data-status="delivered"] {
+  background: #dcfce7;
+}
+
+.orders-table .status-badge[data-status="cancelled"] {
+  background: #fee2e2;
+  text-decoration: line-through;
+}
+
+.orders-table .status-badge[data-status="pending"],
+.orders-table .status-badge[data-status="preparing"],
+.orders-table .status-badge[data-status="ready"] {
+  background: #fef3c7;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.pager a {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 7px 14px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.pager .pager-disabled {
+  border: 1px solid #3a3a3a;
+  border-radius: 9px;
+  padding: 7px 14px;
+  font-weight: 600;
+  font-size: 14px;
+  opacity: 0.4;
+}
+
+.pager .page-of {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.pager .pager-count {
+  margin-left: auto;
+  font-size: 13px;
+  color: #9ca3af;
+}
