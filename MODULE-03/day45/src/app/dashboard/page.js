@@ -81,6 +81,43 @@ function EmptyDashboard() {
   );
 }
 
+const STATES = [
+  { key: "data", label: "Data", href: "/dashboard" },
+  { key: "loading", label: "Skeleton", href: "/dashboard?state=loading" },
+  { key: "empty", label: "Empty", href: "/dashboard?state=empty" },
+  { key: "error", label: "Error", href: "/dashboard?state=error" },
+];
+
+function StateLinks({ active }) {
+  return (
+    <nav className="state-links" aria-label="Dashboard states">
+      {STATES.map((entry) => (
+        <Link
+          key={entry.key}
+          href={entry.href}
+          aria-current={active === entry.key ? "page" : undefined}
+        >
+          {entry.label}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+function ErrorPanel({ message }) {
+  return (
+    <div className="error-box" role="alert">
+      <h2>The dashboard could not load</h2>
+      <p>
+        Aggregating the orders failed, so this page shows nothing rather than
+        numbers it cannot trust.{" "}
+        {message ? `The server said: ${message}` : ""}
+      </p>
+      <Link href="/dashboard">Try again</Link>
+    </div>
+  );
+}
+
 export default async function DashboardPage({ searchParams }) {
   const params = await searchParams;
   const state = typeof params.state === "string" ? params.state : "data";
@@ -89,7 +126,17 @@ export default async function DashboardPage({ searchParams }) {
     await new Promise((resolve) => setTimeout(resolve, 3000));
   }
 
-  const orders = state === "empty" ? [] : listOrders();
+  let orders = [];
+  let loadError = null;
+  try {
+    if (state === "error") {
+      throw new Error("Forced dashboard failure (?state=error)");
+    }
+    orders = state === "empty" ? [] : listOrders();
+  } catch (error) {
+    loadError = error;
+  }
+
   const summary = orders.length > 0 ? summarise(orders) : null;
 
   return (
@@ -100,7 +147,11 @@ export default async function DashboardPage({ searchParams }) {
         so only summary numbers leave this route.
       </p>
 
-      {summary === null ? (
+      <StateLinks active={state} />
+
+      {loadError ? (
+        <ErrorPanel message={loadError.message} />
+      ) : summary === null ? (
         <EmptyDashboard />
       ) : (
         <>

@@ -499,7 +499,8 @@ a {
   margin: 0 0 16px;
 }
 
-.error-box button {
+.error-box button,
+.error-box a {
   background: #ffffff;
   border: none;
   color: #12100e;
@@ -507,6 +508,11 @@ a {
   border-radius: 9px;
   cursor: pointer;
   font-weight: 600;
+  display: inline-block;
+}
+
+.error-box a:hover {
+  background: #e5e7eb;
 }
 
 @media (max-width: 780px) {
@@ -1279,4 +1285,29 @@ a {
 
 .skeleton-row .skeleton-line {
   margin-bottom: 0;
+}
+
+.state-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.state-links a {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 13px;
+}
+
+.state-links a:hover {
+  background: var(--panel-2);
+}
+
+.state-links a[aria-current="page"] {
+  background: #ffffff;
+  color: #12100e;
+  border-color: #ffffff;
+  font-weight: 700;
 }
