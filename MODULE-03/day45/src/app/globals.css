@@ -1107,3 +1107,66 @@ a {
   fill: #6b7280;
   font-size: 12px;
 }
+
+.chart-frame-line {
+  height: 300px;
+}
+
+.chart-line {
+  fill: none;
+  stroke: #1d4ed8;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.chart-area {
+  fill: #dbeafe;
+}
+
+.chart-dot {
+  fill: #1d4ed8;
+}
+
+.chart-table-wrap {
+  max-height: 340px;
+  overflow: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  margin-top: 14px;
+}
+
+.chart-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #12100e;
+}
+
+.chart-table caption {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #6b6b6b;
+}
+
+.chart-table th,
+.chart-table td {
+  text-align: left;
+  padding: 8px 14px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.chart-table thead th {
+  position: sticky;
+  top: 0;
+  background: #f9fafb;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #6b7280;
+}
+
+.chart-table tbody th {
+  font-weight: 600;
+}

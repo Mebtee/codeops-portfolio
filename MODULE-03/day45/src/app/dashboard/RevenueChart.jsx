@@ -11,6 +11,14 @@ export function formatETB(value) {
   return `ETB ${value}`;
 }
 
+export function shortDay(iso) {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  });
+}
+
 function niceTicks(max, count = 4) {
   if (max <= 0) return [0];
   const rough = max / count;
@@ -120,6 +128,103 @@ export default function RevenueChart({ data, labelledBy }) {
           textAnchor="start"
         >
           Revenue per neighbourhood, Ethiopian Birr
+        </text>
+      </svg>
+    </div>
+  );
+}
+
+const LINE_WIDTH = 760;
+const LINE_HEIGHT = 300;
+const LINE_MARGIN = { top: 16, right: 18, bottom: 42, left: 44 };
+
+export function OrdersPerDayChart({ data, labelledBy }) {
+  const points = data ?? [];
+  if (!points.length) return null;
+
+  const plotWidth = LINE_WIDTH - LINE_MARGIN.left - LINE_MARGIN.right;
+  const plotHeight = LINE_HEIGHT - LINE_MARGIN.top - LINE_MARGIN.bottom;
+
+  const maxOrders = points.reduce((max, point) => Math.max(max, point.orders), 1);
+  const step = Math.max(1, Math.ceil(maxOrders / 4));
+  const yMax = step * 4;
+
+  const x = (index) =>
+    LINE_MARGIN.left +
+    (points.length === 1 ? plotWidth / 2 : (index / (points.length - 1)) * plotWidth);
+  const y = (value) => LINE_MARGIN.top + plotHeight - (value / yMax) * plotHeight;
+
+  const path = points
+    .map((point, index) => `${index ? "L" : "M"}${x(index).toFixed(1)},${y(point.orders).toFixed(1)}`)
+    .join(" ");
+  const baseline = LINE_MARGIN.top + plotHeight;
+  const area = `${path} L${x(points.length - 1).toFixed(1)},${baseline} L${x(0).toFixed(1)},${baseline} Z`;
+
+  const yTicks = Array.from({ length: yMax / step + 1 }, (_, i) => i * step);
+  const labelEvery = Math.max(1, Math.ceil(points.length / 6));
+  const xTickIndexes = points
+    .map((_, index) => index)
+    .filter((index) => index % labelEvery === 0 || index === points.length - 1);
+
+  return (
+    <div className="chart-frame chart-frame-line">
+      <svg
+        viewBox={`0 0 ${LINE_WIDTH} ${LINE_HEIGHT}`}
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-labelledby={labelledBy}
+      >
+        {yTicks.map((tick) => (
+          <g key={tick}>
+            <line
+              className="chart-grid"
+              x1={LINE_MARGIN.left}
+              x2={LINE_WIDTH - LINE_MARGIN.right}
+              y1={y(tick)}
+              y2={y(tick)}
+            />
+            <text
+              className="chart-tick"
+              x={LINE_MARGIN.left - 8}
+              y={y(tick)}
+              textAnchor="end"
+              dominantBaseline="middle"
+            >
+              {tick}
+            </text>
+          </g>
+        ))}
+
+        <path className="chart-area" d={area} />
+        <path className="chart-line" d={path} />
+
+        {points.map((point, index) => (
+          <circle className="chart-dot" cx={x(index)} cy={y(point.orders)} r={3} key={point.day}>
+            <title>{`${shortDay(point.day)}: ${point.orders} order${point.orders === 1 ? "" : "s"}`}</title>
+          </circle>
+        ))}
+
+        {xTickIndexes.map((index) => (
+          <text
+            className="chart-tick"
+            x={x(index)}
+            y={baseline + 18}
+            textAnchor="middle"
+            key={points[index].day}
+          >
+            {shortDay(points[index].day)}
+          </text>
+        ))}
+
+        <line
+          className="chart-axis"
+          x1={LINE_MARGIN.left}
+          x2={LINE_WIDTH - LINE_MARGIN.right}
+          y1={baseline}
+          y2={baseline}
+        />
+        <text className="chart-axis-title" x={LINE_MARGIN.left} y={LINE_HEIGHT - 8}>
+          Orders placed per calendar day (UTC dates)
         </text>
       </svg>
     </div>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { listOrders } from "@/lib/orders";
 import { fmt } from "@/lib/format";
-import RevenueChart from "./RevenueChart";
+import RevenueChart, { OrdersPerDayChart } from "./RevenueChart";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +18,7 @@ export function orderTotal(order) {
 function summarise(orders) {
   const revenue = orders.reduce((sum, order) => sum + orderTotal(order), 0);
   const areas = new Map();
+  const daily = new Map();
 
   for (const order of orders) {
     const area = order.subcity || "Unknown";
@@ -26,6 +27,18 @@ function summarise(orders) {
     bucket.revenue += total;
     bucket.orders += 1;
     areas.set(area, bucket);
+
+    const day = order.createdAt.slice(0, 10);
+    daily.set(day, (daily.get(day) ?? 0) + 1);
+  }
+
+  const days = [...daily.keys()].sort();
+  const from = days[0];
+  const to = days[days.length - 1];
+  const byDay = [];
+  for (let stamp = Date.parse(from); stamp <= Date.parse(to); stamp += 86400000) {
+    const day = new Date(stamp).toISOString().slice(0, 10);
+    byDay.push({ day, orders: daily.get(day) ?? 0 });
   }
 
   return {
@@ -34,7 +47,21 @@ function summarise(orders) {
     average: Math.round(revenue / orders.length),
     areas: areas.size,
     byArea: [...areas.values()].sort((a, b) => b.revenue - a.revenue),
+    byDay,
+    range: { from, to },
   };
+}
+
+function shortDay(iso) {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  });
+}
+
+function rangeLabel(range) {
+  return `${shortDay(range.from)} – ${shortDay(range.to)} ${range.to.slice(0, 4)}`;
 }
 
 function EmptyDashboard() {
@@ -81,6 +108,38 @@ export default async function DashboardPage({ searchParams }) {
               Bars read from the aggregated summary array — the raw order
               objects never cross into the client.
             </figcaption>
+          </figure>
+
+          <figure className="chart-block">
+            <h2 id="daily-heading">
+              Orders per day, {rangeLabel(summary.range)} (orders)
+            </h2>
+            <OrdersPerDayChart data={summary.byDay} labelledBy="daily-heading" />
+            <figcaption>
+              The same counts as the chart, spelled out underneath for anyone
+              the SVG does not reach.
+            </figcaption>
+            <div className="chart-table-wrap">
+              <table className="chart-table">
+                <caption>
+                  Orders per day, {rangeLabel(summary.range)} (orders)
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Orders</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {summary.byDay.map((day) => (
+                    <tr key={day.day}>
+                      <th scope="row">{shortDay(day.day)}</th>
+                      <td>{day.orders}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </figure>
         </>
       )}
