@@ -85,6 +85,10 @@ export default async function DashboardPage({ searchParams }) {
   const params = await searchParams;
   const state = typeof params.state === "string" ? params.state : "data";
 
+  if (state === "loading") {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+  }
+
   const orders = state === "empty" ? [] : listOrders();
   const summary = orders.length > 0 ? summarise(orders) : null;
 

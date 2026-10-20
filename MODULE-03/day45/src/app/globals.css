@@ -1257,3 +1257,26 @@ a {
   font-size: 13px;
   color: #9ca3af;
 }
+
+.skeleton-table {
+  margin-top: 20px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.skeleton-row {
+  display: grid;
+  grid-template-columns: 1.1fr 1.5fr 1.1fr 0.5fr 0.9fr 0.8fr;
+  gap: 16px;
+  align-items: center;
+  padding: 15px 18px;
+}
+
+.skeleton-row + .skeleton-row {
+  border-top: 1px solid var(--line);
+}
+
+.skeleton-row .skeleton-line {
+  margin-bottom: 0;
+}
