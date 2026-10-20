@@ -117,14 +117,14 @@ function statusForAge(ageDays) {
     return pickWeighted([
       { value: "delivered", weight: 88 },
       { value: "cancelled", weight: 12 },
-    ]);
+    ]).value;
   }
   if (ageDays > 2) {
     return pickWeighted([
       { value: "delivered", weight: 80 },
       { value: "cancelled", weight: 8 },
       { value: "pending", weight: 12 },
-    ]);
+    ]).value;
   }
   return pickWeighted([
     { value: "delivered", weight: 45 },
@@ -132,7 +132,7 @@ function statusForAge(ageDays) {
     { value: "preparing", weight: 15 },
     { value: "ready", weight: 12 },
     { value: "cancelled", weight: 8 },
-  ]);
+  ]).value;
 }
 
 const now = Date.now();
