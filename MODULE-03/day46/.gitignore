@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+npm-debug.log*
+
+# local env overrides — never commit these
+.env*.local
+
+/data/*
+!/data/users.json
